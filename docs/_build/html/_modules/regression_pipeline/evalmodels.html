@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>regression_pipeline.evalmodels &mdash; Regression pipeline 0.00, 2023 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Regression pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">regression_pipeline</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Regression pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">regression_pipeline.evalmodels</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for regression_pipeline.evalmodels</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">cross_validate</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">statsmodels.stats.weightstats</span> <span class="kn">import</span> <span class="n">ttest_ind</span>
+<span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">mean_absolute_error</span><span class="p">,</span> <span class="n">mean_squared_error</span><span class="p">,</span> <span class="n">r2_score</span>
+<span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">stats</span>
+
+<span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">Utilities</span>
+
+<span class="c1"># import shap</span>
+
+
+<div class="viewcode-block" id="ModelSelection"><a class="viewcode-back" href="../../regression_pipeline.html#regression_pipeline.evalmodels.ModelSelection">[docs]</a><span class="k">class</span> <span class="nc">ModelSelection</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Performs model selection using various feature sets and models.</span>
+
+<span class="sd">    This class implements methods in order to figure out the best performing</span>
+<span class="sd">    models out of all the models under trial along with the best feature set.</span>
+<span class="sd">    However, the models are the vanila models without any fine tuning of the</span>
+<span class="sd">    parameters.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    --------------</span>
+<span class="sd">    all_feature_sets: a list of lists of strings</span>
+<span class="sd">        a list of various feature sets obtained from feature selection methods</span>
+
+<span class="sd">    scoring: a list of strings</span>
+<span class="sd">        A list of scoring metrics to evaluate the models (i.e.</span>
+<span class="sd">        neg_mean_squared_error)</span>
+
+<span class="sd">    score_funcs: a list of strings</span>
+<span class="sd">        A list of score functions to evaluate the models (i.e.</span>
+<span class="sd">        mean_squared_error)</span>
+
+<span class="sd">    cv: int, cross-validation generator or an iterator</span>
+<span class="sd">        if int, defines the number of cross-validated folds</span>
+
+<span class="sd">    njobs: int</span>
+<span class="sd">        Number of jobs to be run in parallel</span>
+
+<span class="sd">    Methods</span>
+<span class="sd">    -------</span>
+<span class="sd">    evaluate_model_performance(model, xtrain, xtest, ytrain, ytest):</span>
+<span class="sd">        Evaluates the performance of the given model in terms of the provided</span>
+<span class="sd">        metrics.</span>
+
+<span class="sd">    run_model_selection(models, xtrain, xtest, ytrain, ytest, feature_names_map):</span>
+<span class="sd">        Runs the model selection process with different feature sets and</span>
+<span class="sd">        models.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">all_feature_sets</span><span class="p">,</span> <span class="n">scoring</span><span class="p">,</span> <span class="n">score_funcs</span><span class="p">,</span> <span class="n">cv</span><span class="p">,</span> <span class="n">njobs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">all_feature_sets</span> <span class="o">=</span> <span class="n">all_feature_sets</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scoring</span> <span class="o">=</span> <span class="n">scoring</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cv</span> <span class="o">=</span> <span class="n">cv</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">njobs</span> <span class="o">=</span> <span class="n">njobs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">score_funcs</span> <span class="o">=</span> <span class="n">score_funcs</span>
+
+<div class="viewcode-block" id="ModelSelection.evaluate_model_performance"><a class="viewcode-back" href="../../regression_pipeline.html#regression_pipeline.evalmodels.ModelSelection.evaluate_model_performance">[docs]</a>    <span class="k">def</span> <span class="nf">evaluate_model_performance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">xtrain</span><span class="p">,</span> <span class="n">xtest</span><span class="p">,</span> <span class="n">ytrain</span><span class="p">,</span> <span class="n">ytest</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Evaluates performance of a model on the training and test data.</span>
+
+<span class="sd">        The model performance is evaluated in terms of the appropriate metric</span>
+<span class="sd">        relevant to the problem at hand. Also performs a ttest on the</span>
+<span class="sd">        cross-validated scores of the model.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ------------</span>
+<span class="sd">        model: An instance of the model for which the performance is being</span>
+<span class="sd">            evaluated</span>
+
+<span class="sd">        xtrain: an array of shape (n_samples, n_features)</span>
+<span class="sd">            Train data</span>
+
+<span class="sd">        xtest: an array of shape (m_samples, n_features)</span>
+<span class="sd">            Test data</span>
+
+<span class="sd">        ytrain: an array of shape(n_samples,)</span>
+<span class="sd">            Target values of train data</span>
+
+<span class="sd">        ytest: an array of shape (m_samples, )</span>
+<span class="sd">            Target values of test data</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        ---------------</span>
+<span class="sd">        mean_results_df: a pandas dataframe</span>
+<span class="sd">            all the performance results w.r.t. the train and test data</span>
+
+<span class="sd">        ci_train: a tuple of floats</span>
+<span class="sd">            the confidence intervals of the predicted mean of the train data</span>
+
+<span class="sd">        ci_test: a tuple of floats</span>
+<span class="sd">            the confidence intervals of the predicted mean of the test data</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">mean_results_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+
+        <span class="n">cv_results</span> <span class="o">=</span> <span class="n">cross_validate</span><span class="p">(</span>
+            <span class="n">model</span><span class="p">,</span>
+            <span class="n">xtrain</span><span class="p">,</span>
+            <span class="n">ytrain</span><span class="p">,</span>
+            <span class="n">scoring</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">scoring</span><span class="p">,</span>
+            <span class="n">cv</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cv</span><span class="p">,</span>
+            <span class="n">n_jobs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">njobs</span><span class="p">,</span>
+            <span class="n">return_train_score</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">return_estimator</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">mean_test_score</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">cv_results</span><span class="p">[</span><span class="s2">&quot;_&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;test&quot;</span><span class="p">,</span> <span class="n">score</span><span class="p">])])</span> <span class="k">for</span> <span class="n">score</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">scoring</span>
+        <span class="p">]</span>
+        <span class="n">mean_train_score</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">cv_results</span><span class="p">[</span><span class="s2">&quot;_&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;train&quot;</span><span class="p">,</span> <span class="n">score</span><span class="p">])])</span> <span class="k">for</span> <span class="n">score</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">scoring</span>
+        <span class="p">]</span>
+
+        <span class="n">train_score_cv</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">cv_results</span><span class="p">[</span><span class="s2">&quot;_&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;train&quot;</span><span class="p">,</span> <span class="n">score</span><span class="p">])]</span> <span class="k">for</span> <span class="n">score</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">scoring</span>
+        <span class="p">]</span>
+        <span class="n">test_score_cv</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">cv_results</span><span class="p">[</span><span class="s2">&quot;_&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;test&quot;</span><span class="p">,</span> <span class="n">score</span><span class="p">])]</span> <span class="k">for</span> <span class="n">score</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">scoring</span>
+        <span class="p">]</span>
+
+        <span class="n">score_abbreviation</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;neg_mean_squared_error&quot;</span><span class="p">:</span> <span class="s2">&quot;mse&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;neg_mean_absolute_error&quot;</span><span class="p">:</span> <span class="s2">&quot;mae&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;r2&quot;</span><span class="p">:</span> <span class="s2">&quot;r2&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;mean_squared_error&quot;</span><span class="p">:</span> <span class="s2">&quot;mse&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;mean_absolute_error&quot;</span><span class="p">:</span> <span class="s2">&quot;mae&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;r2_score&quot;</span><span class="p">:</span> <span class="s2">&quot;r2&quot;</span><span class="p">,</span>
+        <span class="p">}</span>
+
+        <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scoring</span><span class="p">)):</span>
+            <span class="n">name_score</span> <span class="o">=</span> <span class="n">score_abbreviation</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">scoring</span><span class="p">[</span><span class="n">ii</span><span class="p">]]</span>
+
+            <span class="n">ttest_res</span> <span class="o">=</span> <span class="n">ttest_ind</span><span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">train_score_cv</span><span class="p">[</span><span class="n">ii</span><span class="p">]),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">test_score_cv</span><span class="p">[</span><span class="n">ii</span><span class="p">])</span>
+            <span class="p">)</span>
+
+            <span class="n">res_col_head1</span> <span class="o">=</span> <span class="s2">&quot;_&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;cv_train&quot;</span><span class="p">,</span> <span class="n">name_score</span><span class="p">])</span>
+            <span class="n">res_col_head2</span> <span class="o">=</span> <span class="s2">&quot;_&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;cv_test&quot;</span><span class="p">,</span> <span class="n">name_score</span><span class="p">])</span>
+            <span class="n">res_col_head3</span> <span class="o">=</span> <span class="s2">&quot;_&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;pval&quot;</span><span class="p">,</span> <span class="n">name_score</span><span class="p">])</span>
+            <span class="n">res_col_head4</span> <span class="o">=</span> <span class="s2">&quot;_&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;t-stat&quot;</span><span class="p">,</span> <span class="n">name_score</span><span class="p">])</span>
+
+            <span class="n">mean_results_df</span><span class="p">[</span><span class="n">res_col_head1</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">mean_train_score</span><span class="p">[</span><span class="n">ii</span><span class="p">]]</span>
+            <span class="n">mean_results_df</span><span class="p">[</span><span class="n">res_col_head2</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">mean_test_score</span><span class="p">[</span><span class="n">ii</span><span class="p">]]</span>
+
+            <span class="n">mean_results_df</span><span class="p">[</span><span class="n">res_col_head3</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">ttest_res</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+            <span class="n">mean_results_df</span><span class="p">[</span><span class="n">res_col_head4</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">ttest_res</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+
+        <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">xtrain</span><span class="p">,</span> <span class="n">ytrain</span><span class="p">)</span>
+        <span class="c1"># explainer = shap.Explainer(model, xtrain)</span>
+        <span class="c1"># shap_values = explainer(xtrain)</span>
+        <span class="c1"># print(shap_values)</span>
+
+        <span class="n">y_pred_train</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">xtrain</span><span class="p">)</span>
+        <span class="n">y_pred_test</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">xtest</span><span class="p">)</span>
+        <span class="n">mean_y_pred_train</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">y_pred_train</span><span class="p">)</span>
+        <span class="n">sigma_y_pred_train</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">y_pred_train</span><span class="p">)</span>
+        <span class="n">mean_y_pred_test</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">y_pred_test</span><span class="p">)</span>
+        <span class="n">sigma_y_pred_test</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">y_pred_test</span><span class="p">)</span>
+
+        <span class="n">low_bound_train</span><span class="p">,</span> <span class="n">upper_bound_train</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">norm</span><span class="o">.</span><span class="n">interval</span><span class="p">(</span>
+            <span class="n">alpha</span><span class="o">=</span><span class="mf">0.95</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="n">mean_y_pred_train</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">sigma_y_pred_train</span>
+        <span class="p">)</span>  <span class="c1"># /np.sqrt(len(y_pred_train)))</span>
+        <span class="n">low_bound_test</span><span class="p">,</span> <span class="n">upper_bound_test</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">norm</span><span class="o">.</span><span class="n">interval</span><span class="p">(</span>
+            <span class="n">alpha</span><span class="o">=</span><span class="mf">0.95</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="n">mean_y_pred_test</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">sigma_y_pred_test</span>
+        <span class="p">)</span>  <span class="c1"># /np.sqrt(len(y_pred_test)))</span>
+        <span class="n">low_bound_train</span> <span class="o">=</span> <span class="n">low_bound_train</span> <span class="o">-</span> <span class="n">mean_y_pred_train</span>
+        <span class="n">upper_bound_train</span> <span class="o">=</span> <span class="n">upper_bound_train</span> <span class="o">-</span> <span class="n">mean_y_pred_train</span>
+        <span class="n">low_bound_test</span> <span class="o">=</span> <span class="n">low_bound_test</span> <span class="o">-</span> <span class="n">mean_y_pred_test</span>
+        <span class="n">upper_bound_test</span> <span class="o">=</span> <span class="n">upper_bound_test</span> <span class="o">-</span> <span class="n">mean_y_pred_test</span>
+
+        <span class="n">ci_train</span> <span class="o">=</span> <span class="p">(</span><span class="n">low_bound_train</span><span class="p">,</span> <span class="n">mean_y_pred_train</span><span class="p">,</span> <span class="n">upper_bound_train</span><span class="p">)</span>
+        <span class="n">ci_test</span> <span class="o">=</span> <span class="p">(</span><span class="n">low_bound_test</span><span class="p">,</span> <span class="n">mean_y_pred_test</span><span class="p">,</span> <span class="n">upper_bound_test</span><span class="p">)</span>
+
+        <span class="n">train_score</span> <span class="o">=</span> <span class="p">[</span><span class="n">score</span><span class="p">(</span><span class="n">ytrain</span><span class="p">,</span> <span class="n">y_pred_train</span><span class="p">)</span> <span class="k">for</span> <span class="n">score</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">score_funcs</span><span class="p">]</span>
+        <span class="n">test_score</span> <span class="o">=</span> <span class="p">[</span><span class="n">score</span><span class="p">(</span><span class="n">ytest</span><span class="p">,</span> <span class="n">y_pred_test</span><span class="p">)</span> <span class="k">for</span> <span class="n">score</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">score_funcs</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">score_funcs</span><span class="p">)):</span>
+            <span class="n">name_score</span> <span class="o">=</span> <span class="n">score_abbreviation</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">score_funcs</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span><span class="o">.</span><span class="vm">__name__</span><span class="p">]</span>
+
+            <span class="n">res_col_head5</span> <span class="o">=</span> <span class="s2">&quot;_&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;train&quot;</span><span class="p">,</span> <span class="n">name_score</span><span class="p">])</span>
+            <span class="n">res_col_head6</span> <span class="o">=</span> <span class="s2">&quot;_&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;test&quot;</span><span class="p">,</span> <span class="n">name_score</span><span class="p">])</span>
+            <span class="n">res_col_head7</span> <span class="o">=</span> <span class="s2">&quot;_&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;</span><span class="si">%d</span><span class="s2">iff&quot;</span><span class="p">,</span> <span class="n">name_score</span><span class="p">])</span>
+
+            <span class="n">mean_results_df</span><span class="p">[</span><span class="n">res_col_head5</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">train_score</span><span class="p">[</span><span class="n">ii</span><span class="p">]]</span>
+            <span class="n">mean_results_df</span><span class="p">[</span><span class="n">res_col_head6</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">test_score</span><span class="p">[</span><span class="n">ii</span><span class="p">]]</span>
+            <span class="n">mean_results_df</span><span class="p">[</span><span class="n">res_col_head7</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">train_score</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span> <span class="o">-</span> <span class="n">test_score</span><span class="p">[</span><span class="n">ii</span><span class="p">])</span> <span class="o">/</span> <span class="n">train_score</span><span class="p">[</span><span class="n">ii</span><span class="p">])</span> <span class="o">*</span> <span class="mi">100</span>
+            <span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">mean_results_df</span><span class="p">,</span> <span class="n">ci_train</span><span class="p">,</span> <span class="n">ci_test</span></div>
+
+<div class="viewcode-block" id="ModelSelection.run_model_selection"><a class="viewcode-back" href="../../regression_pipeline.html#regression_pipeline.evalmodels.ModelSelection.run_model_selection">[docs]</a>    <span class="k">def</span> <span class="nf">run_model_selection</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">models</span><span class="p">,</span> <span class="n">xtrain</span><span class="p">,</span> <span class="n">xtest</span><span class="p">,</span> <span class="n">ytrain</span><span class="p">,</span> <span class="n">ytest</span><span class="p">,</span> <span class="n">feature_names_map</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Runs model selection process.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ------------</span>
+<span class="sd">        models: a list</span>
+<span class="sd">            A list of model instances to be tested</span>
+
+<span class="sd">        xtrain: an array of shape (n_samples, n_features)</span>
+<span class="sd">            Training data</span>
+
+<span class="sd">        xtest: an array of shape (m_samples, n_features)</span>
+<span class="sd">            Test data</span>
+
+<span class="sd">        ytrain: an array of shape (n_samples, )</span>
+<span class="sd">            Training target values</span>
+
+<span class="sd">        ytest: an array of shape (m_samples, )</span>
+<span class="sd">            Test target values</span>
+
+<span class="sd">        feature_names_map: a dict</span>
+<span class="sd">            A dictionary mapping the dummy feature names to the original</span>
+<span class="sd">            feature names</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        ------------</span>
+<span class="sd">        all_results_df: a pandas dataframe</span>
+<span class="sd">            performance results of the models tried in the study</span>
+
+<span class="sd">        diffnt_trial_features: a dict</span>
+<span class="sd">            A dictionary of the vaious feature sets that were tried in terms</span>
+<span class="sd">            of the orginal feature names</span>
+
+<span class="sd">        ci_train_all: a list of tuples</span>
+<span class="sd">            a list of tuples of the confidence intervals w.r.t. the training</span>
+<span class="sd">            data for all the models</span>
+
+<span class="sd">        ci_test_all: a list of tuples</span>
+<span class="sd">            A list of tuples of the confidence intervals w.r.t. the test data</span>
+<span class="sd">            for all the models tried</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">all_results_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+        <span class="n">all_reslts_index</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">FeatureSet</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">diffnt_trial_features</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">ci_train_all</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">ci_test_all</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">feature_set_i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_feature_sets</span><span class="p">:</span>
+            <span class="n">FeatureSet</span> <span class="o">=</span> <span class="n">FeatureSet</span> <span class="o">+</span> <span class="mi">1</span>
+
+            <span class="n">filtered_feature_names_org</span> <span class="o">=</span> <span class="n">Utilities</span><span class="o">.</span><span class="n">extract_raw_feature_names</span><span class="p">(</span>
+                <span class="n">feature_set_i</span><span class="p">,</span> <span class="n">feature_names_map</span>
+            <span class="p">)</span>
+            <span class="n">X_filtered_train</span> <span class="o">=</span> <span class="n">Utilities</span><span class="o">.</span><span class="n">filter_features</span><span class="p">(</span><span class="n">xtrain</span><span class="p">,</span> <span class="n">feature_set_i</span><span class="p">)</span>
+            <span class="n">X_filtered_test</span> <span class="o">=</span> <span class="n">Utilities</span><span class="o">.</span><span class="n">filter_features</span><span class="p">(</span><span class="n">xtest</span><span class="p">,</span> <span class="n">feature_set_i</span><span class="p">)</span>
+            <span class="n">feature_set_name</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;set&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">FeatureSet</span><span class="p">)])</span>
+            <span class="n">diffnt_trial_features</span><span class="p">[</span><span class="n">feature_set_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">filtered_feature_names_org</span>
+
+            <span class="k">for</span> <span class="n">model_i</span> <span class="ow">in</span> <span class="n">models</span><span class="p">:</span>
+                <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluate_model_performance</span><span class="p">(</span>
+                    <span class="n">model_i</span><span class="p">,</span> <span class="n">X_filtered_train</span><span class="p">,</span> <span class="n">X_filtered_test</span><span class="p">,</span> <span class="n">ytrain</span><span class="p">,</span> <span class="n">ytest</span>
+                <span class="p">)</span>
+
+                <span class="n">model_name</span> <span class="o">=</span> <span class="s2">&quot;_&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">type</span><span class="p">(</span><span class="n">model_i</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">feature_set_name</span><span class="p">])</span>
+
+                <span class="n">all_reslts_index</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">model_name</span><span class="p">)</span>
+
+                <span class="n">all_results_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span>
+                    <span class="p">[</span><span class="n">all_results_df</span><span class="p">,</span> <span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span>
+                <span class="p">)</span>
+
+                <span class="n">ci_train_all</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">results</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                <span class="n">ci_test_all</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">results</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+
+        <span class="n">all_results_df</span> <span class="o">=</span> <span class="n">all_results_df</span><span class="o">.</span><span class="n">set_axis</span><span class="p">(</span><span class="n">all_reslts_index</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="s2">&quot;index&quot;</span><span class="p">)</span>
+        <span class="n">all_results_df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;Models&quot;</span>
+
+        <span class="k">return</span> <span class="n">all_results_df</span><span class="p">,</span> <span class="n">diffnt_trial_features</span><span class="p">,</span> <span class="n">ci_train_all</span><span class="p">,</span> <span class="n">ci_test_all</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Bhaskar Borah.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

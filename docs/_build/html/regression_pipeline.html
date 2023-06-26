@@ -1,0 +1,2045 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>regression_pipeline package &mdash; Regression pipeline 0.00, 2023 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="regression_pipeline" href="modules.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Regression pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">regression_pipeline</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">regression_pipeline package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-regression_pipeline.evalmodels">regression_pipeline.evalmodels module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#regression_pipeline.evalmodels.ModelSelection"><code class="docutils literal notranslate"><span class="pre">ModelSelection</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-regression_pipeline.feature_eng">regression_pipeline.feature_eng module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#regression_pipeline.feature_eng.engineer_feature"><code class="docutils literal notranslate"><span class="pre">engineer_feature()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-regression_pipeline.feature_select">regression_pipeline.feature_select module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#regression_pipeline.feature_select.FeatureSelect"><code class="docutils literal notranslate"><span class="pre">FeatureSelect</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-regression_pipeline.hyperparam_opt">regression_pipeline.hyperparam_opt module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#regression_pipeline.hyperparam_opt.OptunaOpt"><code class="docutils literal notranslate"><span class="pre">OptunaOpt</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-regression_pipeline.math_transformers">regression_pipeline.math_transformers module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#regression_pipeline.math_transformers.MathTransformations"><code class="docutils literal notranslate"><span class="pre">MathTransformations</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-regression_pipeline.preprocess">regression_pipeline.preprocess module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#regression_pipeline.preprocess.PreProcessData"><code class="docutils literal notranslate"><span class="pre">PreProcessData</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-regression_pipeline.utils">regression_pipeline.utils module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#regression_pipeline.utils.Utilities"><code class="docutils literal notranslate"><span class="pre">Utilities</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-regression_pipeline.vizualization">regression_pipeline.vizualization module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#regression_pipeline.vizualization.VisualizationData"><code class="docutils literal notranslate"><span class="pre">VisualizationData</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-regression_pipeline">Module contents</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#regression_pipeline.FeatureSelect"><code class="docutils literal notranslate"><span class="pre">FeatureSelect</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#regression_pipeline.MathTransformations"><code class="docutils literal notranslate"><span class="pre">MathTransformations</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#regression_pipeline.ModelSelection"><code class="docutils literal notranslate"><span class="pre">ModelSelection</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#regression_pipeline.OptunaOpt"><code class="docutils literal notranslate"><span class="pre">OptunaOpt</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#regression_pipeline.PreProcessData"><code class="docutils literal notranslate"><span class="pre">PreProcessData</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#regression_pipeline.Utilities"><code class="docutils literal notranslate"><span class="pre">Utilities</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#regression_pipeline.VisualizationData"><code class="docutils literal notranslate"><span class="pre">VisualizationData</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#regression_pipeline.engineer_feature"><code class="docutils literal notranslate"><span class="pre">engineer_feature()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Regression pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">regression_pipeline</a></li>
+      <li class="breadcrumb-item active">regression_pipeline package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/regression_pipeline.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="regression-pipeline-package">
+<h1>regression_pipeline package<a class="headerlink" href="#regression-pipeline-package" title="Permalink to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
+</section>
+<section id="module-regression_pipeline.evalmodels">
+<span id="regression-pipeline-evalmodels-module"></span><h2>regression_pipeline.evalmodels module<a class="headerlink" href="#module-regression_pipeline.evalmodels" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="regression_pipeline.evalmodels.ModelSelection">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">regression_pipeline.evalmodels.</span></span><span class="sig-name descname"><span class="pre">ModelSelection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">all_feature_sets</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scoring</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">score_funcs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cv</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">njobs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/evalmodels.html#ModelSelection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.evalmodels.ModelSelection" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Performs model selection using various feature sets and models.</p>
+<p>This class implements methods in order to figure out the best performing
+models out of all the models under trial along with the best feature set.
+However, the models are the vanila models without any fine tuning of the
+parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>all_feature_sets: a list of lists of strings</strong></dt><dd><p>a list of various feature sets obtained from feature selection methods</p>
+</dd>
+<dt><strong>scoring: a list of strings</strong></dt><dd><p>A list of scoring metrics to evaluate the models (i.e.
+neg_mean_squared_error)</p>
+</dd>
+<dt><strong>score_funcs: a list of strings</strong></dt><dd><p>A list of score functions to evaluate the models (i.e.
+mean_squared_error)</p>
+</dd>
+<dt><strong>cv: int, cross-validation generator or an iterator</strong></dt><dd><p>if int, defines the number of cross-validated folds</p>
+</dd>
+<dt><strong>njobs: int</strong></dt><dd><p>Number of jobs to be run in parallel</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><strong>evaluate_model_performance(model, xtrain, xtest, ytrain, ytest):</strong></p></td>
+<td><p>Evaluates the performance of the given model in terms of the provided metrics.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>run_model_selection(models, xtrain, xtest, ytrain, ytest, feature_names_map):</strong></p></td>
+<td><p>Runs the model selection process with different feature sets and models.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="regression_pipeline.evalmodels.ModelSelection.evaluate_model_performance">
+<span class="sig-name descname"><span class="pre">evaluate_model_performance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xtrain</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xtest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ytrain</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ytest</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/evalmodels.html#ModelSelection.evaluate_model_performance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.evalmodels.ModelSelection.evaluate_model_performance" title="Permalink to this definition"></a></dt>
+<dd><p>Evaluates performance of a model on the training and test data.</p>
+<p>The model performance is evaluated in terms of the appropriate metric
+relevant to the problem at hand. Also performs a ttest on the
+cross-validated scores of the model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>model: An instance of the model for which the performance is being</strong></dt><dd><p>evaluated</p>
+</dd>
+<dt><strong>xtrain: an array of shape (n_samples, n_features)</strong></dt><dd><p>Train data</p>
+</dd>
+<dt><strong>xtest: an array of shape (m_samples, n_features)</strong></dt><dd><p>Test data</p>
+</dd>
+<dt><strong>ytrain: an array of shape(n_samples,)</strong></dt><dd><p>Target values of train data</p>
+</dd>
+<dt><strong>ytest: an array of shape (m_samples, )</strong></dt><dd><p>Target values of test data</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>mean_results_df: a pandas dataframe</dt><dd><p>all the performance results w.r.t. the train and test data</p>
+</dd>
+<dt>ci_train: a tuple of floats</dt><dd><p>the confidence intervals of the predicted mean of the train data</p>
+</dd>
+<dt>ci_test: a tuple of floats</dt><dd><p>the confidence intervals of the predicted mean of the test data</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regression_pipeline.evalmodels.ModelSelection.run_model_selection">
+<span class="sig-name descname"><span class="pre">run_model_selection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">models</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xtrain</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xtest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ytrain</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ytest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feature_names_map</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/evalmodels.html#ModelSelection.run_model_selection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.evalmodels.ModelSelection.run_model_selection" title="Permalink to this definition"></a></dt>
+<dd><p>Runs model selection process.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>models: a list</strong></dt><dd><p>A list of model instances to be tested</p>
+</dd>
+<dt><strong>xtrain: an array of shape (n_samples, n_features)</strong></dt><dd><p>Training data</p>
+</dd>
+<dt><strong>xtest: an array of shape (m_samples, n_features)</strong></dt><dd><p>Test data</p>
+</dd>
+<dt><strong>ytrain: an array of shape (n_samples, )</strong></dt><dd><p>Training target values</p>
+</dd>
+<dt><strong>ytest: an array of shape (m_samples, )</strong></dt><dd><p>Test target values</p>
+</dd>
+<dt><strong>feature_names_map: a dict</strong></dt><dd><p>A dictionary mapping the dummy feature names to the original
+feature names</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>all_results_df: a pandas dataframe</dt><dd><p>performance results of the models tried in the study</p>
+</dd>
+<dt>diffnt_trial_features: a dict</dt><dd><p>A dictionary of the vaious feature sets that were tried in terms
+of the orginal feature names</p>
+</dd>
+<dt>ci_train_all: a list of tuples</dt><dd><p>a list of tuples of the confidence intervals w.r.t. the training
+data for all the models</p>
+</dd>
+<dt>ci_test_all: a list of tuples</dt><dd><p>A list of tuples of the confidence intervals w.r.t. the test data
+for all the models tried</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-regression_pipeline.feature_eng">
+<span id="regression-pipeline-feature-eng-module"></span><h2>regression_pipeline.feature_eng module<a class="headerlink" href="#module-regression_pipeline.feature_eng" title="Permalink to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="regression_pipeline.feature_eng.engineer_feature">
+<span class="sig-prename descclassname"><span class="pre">regression_pipeline.feature_eng.</span></span><span class="sig-name descname"><span class="pre">engineer_feature</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/feature_eng.html#engineer_feature"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.feature_eng.engineer_feature" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-regression_pipeline.feature_select">
+<span id="regression-pipeline-feature-select-module"></span><h2>regression_pipeline.feature_select module<a class="headerlink" href="#module-regression_pipeline.feature_select" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="regression_pipeline.feature_select.FeatureSelect">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">regression_pipeline.feature_select.</span></span><span class="sig-name descname"><span class="pre">FeatureSelect</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xtrain</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xtest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ytrain</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feature_names</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/feature_select.html#FeatureSelect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.feature_select.FeatureSelect" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Feature selection process</p>
+<p>Variety of feature selection methods are employed in order to obtain
+sets of important features.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>xtrain</strong><span class="classifier">numpy ndarray</span></dt><dd><p>Training data</p>
+</dd>
+<dt><strong>xtest</strong><span class="classifier">numpy ndarray</span></dt><dd><p>Test dataset</p>
+</dd>
+<dt><strong>ytrain</strong><span class="classifier">numpy ndarray</span></dt><dd><p>Training target</p>
+</dd>
+<dt><strong>feature_names</strong><span class="classifier">a list</span></dt><dd><p>A list of all the feature names.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Attributes<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>org_feature_names_sub_</strong><span class="classifier">an array of shape (n_features, )</span></dt><dd><p>An array of dummy feature names in the subscripted form like x0, x1,
+x2…xn.</p>
+</dd>
+<dt><strong>org_feature_names_map_</strong><span class="classifier">a dictionary</span></dt><dd><p>A dictionary that maps the dummy features to the original feature names
+of the problem at hand.</p>
+</dd>
+<dt><strong>updat_feature_names_sub_</strong><span class="classifier">an array of shape (k_features, )</span></dt><dd><p>An array of the updated dummy features when some features are dropped
+from the data.</p>
+</dd>
+<dt><strong>updat_feature_names_map_</strong><span class="classifier">a dictionary</span></dt><dd><p>A dictionary of the updated map of the dummy features to the original
+features.</p>
+</dd>
+<dt><strong>all_selected_features_</strong><span class="classifier">a list</span></dt><dd><p>A list of all the feature subsets selected by various methods.</p>
+</dd>
+<dt><strong>selected_features_</strong><span class="classifier">a list</span></dt><dd><p>A list of selected feature names selected by majority voting.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><strong>create_feature_names_sub():</strong></p></td>
+<td><p>Creates an array of feature names in the form x0, x1, x2,…..,xn.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>map_orig_feature_name():</strong></p></td>
+<td><p>Maps the orginal feature names with the feature names in the form x0,x1,…..xn.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>update_org_feature_names_map(number_dropped_features, dropped_features):</strong></p></td>
+<td><p>Updates feature names and the feature map.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>filter_low_variance_features():</strong></p></td>
+<td><p>Drops feature whose variance is low or zero.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>select_recursive_feature_elimination(model):</strong></p></td>
+<td><p>Selects features with recusrsive feature elimination method.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>select_borutapy(rf):</strong></p></td>
+<td><p>Selects features with BorutaPy algorithm.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>select_fregression():</strong></p></td>
+<td><p>Selects features with correlation significance with the target.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>select_sequential_feature_selector(model):</strong></p></td>
+<td><p>Selects feature with sequential feature selection method.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>select_feature_low_vif():</strong></p></td>
+<td><p>Selects feature with low variance inflation factor avoiding multicolinierity.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>select_features_vote(rf, model):</strong></p></td>
+<td><p>Selects features having majority selection by various methods.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="regression_pipeline.feature_select.FeatureSelect.create_feature_names_sub">
+<span class="sig-name descname"><span class="pre">create_feature_names_sub</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/feature_select.html#FeatureSelect.create_feature_names_sub"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.feature_select.FeatureSelect.create_feature_names_sub" title="Permalink to this definition"></a></dt>
+<dd><p>Creates an array of dummy feature names</p>
+<p>A set of feature names in the form of x0, x1, x2,….xn are created as
+these will be used while running the machine learning algorithms with
+the data in an array form of shape (n_samples, n_features).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regression_pipeline.feature_select.FeatureSelect.filter_low_variance_features">
+<span class="sig-name descname"><span class="pre">filter_low_variance_features</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">var_threshold</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/feature_select.html#FeatureSelect.filter_low_variance_features"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.feature_select.FeatureSelect.filter_low_variance_features" title="Permalink to this definition"></a></dt>
+<dd><p>Filters features that have low variance than the threshold</p>
+<p>Some features in the data may have zero variance or variance much lower
+than the pre-set threshold. Such features are carry not much
+information and hence need to be dropped from the data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>var_threshold: float</strong></dt><dd><p>Threshold for the variance for dropping a particular feature from
+the data.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regression_pipeline.feature_select.FeatureSelect.map_orig_feature_names">
+<span class="sig-name descname"><span class="pre">map_orig_feature_names</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/feature_select.html#FeatureSelect.map_orig_feature_names"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.feature_select.FeatureSelect.map_orig_feature_names" title="Permalink to this definition"></a></dt>
+<dd><p>Maps the dummy feature names to the original feature names.</p>
+<p>The original feature names are necessary in order to interpret the
+models. Therefor, this function maps the dummy features (x0, x1,
+x2,…xn) in to the corresponding original feature names of the problem
+of interest. A dictionary is created with the keys being the dummy
+features and the values being the original feature names.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regression_pipeline.feature_select.FeatureSelect.select_borutapy">
+<span class="sig-name descname"><span class="pre">select_borutapy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/feature_select.html#FeatureSelect.select_borutapy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.feature_select.FeatureSelect.select_borutapy" title="Permalink to this definition"></a></dt>
+<dd><p>Selects features employing BortaPy algorithm</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>rf: A random forest regression instance</strong></dt><dd></dd>
+<dt><strong>random_state: int</strong></dt><dd><p>Seed value to control the random number generator</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regression_pipeline.feature_select.FeatureSelect.select_feature_low_vif">
+<span class="sig-name descname"><span class="pre">select_feature_low_vif</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/feature_select.html#FeatureSelect.select_feature_low_vif"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.feature_select.FeatureSelect.select_feature_low_vif" title="Permalink to this definition"></a></dt>
+<dd><p>Selects features with low variance inflation factor (VIF)</p>
+<p>VIF is a key indicator of multicolinearity among the features. if VIF
+is higher, say closer to 10 or higher, then such features are highly
+correlated with other features and need to be dropped. Which features
+need to be dropped is based on the problem at hand and the feasibility
+of the data.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regression_pipeline.feature_select.FeatureSelect.select_features_vote">
+<span class="sig-name descname"><span class="pre">select_features_vote</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cv</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">njobs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tolerance</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">var_threshold</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pval</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step_rfe</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/feature_select.html#FeatureSelect.select_features_vote"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.feature_select.FeatureSelect.select_features_vote" title="Permalink to this definition"></a></dt>
+<dd><p>Selects features that are selected by majority of the methods as
+above</p>
+<p>Feature which are selected by majority of the methods implemented here
+are supposed to be important features. This function selects the
+features based on majority voting.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>rf: A random forest regression instance</strong></dt><dd></dd>
+<dt><strong>model: A model instance (i.e. LinearRegression, SVR, etc..)</strong></dt><dd></dd>
+<dt><strong>cv: int, cross-validation generator or an iterator</strong></dt><dd><p>if int, then defines the number of cross-validation folds</p>
+</dd>
+<dt><strong>njobs: int</strong></dt><dd><p>number of jobs to run in parallel</p>
+</dd>
+<dt><strong>tolerance: float</strong></dt><dd><p>If the score is not incremented by at least tol between
+two consecutive feature additions or removals, stop adding or
+removing. More explanation can be read from sklearn doc.</p>
+</dd>
+<dt><strong>var_threshold: float</strong></dt><dd><p>Threshold for the variance for dropping a particular feature from
+the data.</p>
+</dd>
+<dt><strong>pval: float</strong></dt><dd><p>p-value threshold in order to decide if the regression is
+significant or not.</p>
+</dd>
+<dt><strong>random_state: int</strong></dt><dd><p>Seed value to control the random number generator</p>
+</dd>
+<dt><strong>step_rfe: int or float</strong></dt><dd><p>Please see the sklearn doc for RFECV</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regression_pipeline.feature_select.FeatureSelect.select_fregression">
+<span class="sig-name descname"><span class="pre">select_fregression</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pval</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/feature_select.html#FeatureSelect.select_fregression"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.feature_select.FeatureSelect.select_fregression" title="Permalink to this definition"></a></dt>
+<dd><p>Selects features based on univariate linear regression tests</p>
+<p>The f_regression algorithm as implemented in sklearn is being used
+here. More can be read from the sklearn f_regression documentation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>pval: float</strong></dt><dd><p>p-value threshold in order to decide if the regression is
+significant or not.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regression_pipeline.feature_select.FeatureSelect.select_recursive_feature_elimination">
+<span class="sig-name descname"><span class="pre">select_recursive_feature_elimination</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cv</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step_rfe</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/feature_select.html#FeatureSelect.select_recursive_feature_elimination"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.feature_select.FeatureSelect.select_recursive_feature_elimination" title="Permalink to this definition"></a></dt>
+<dd><p>Selects features using recursive feature elimination method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>model: A model instance (i.e. LinearRegression, SVR, etc.)</strong></dt><dd></dd>
+<dt><strong>cv: int, cross-validation generator or an iterable</strong></dt><dd><p>if integer, then defines the number of cross-validation folds</p>
+</dd>
+<dt><strong>step_rfe: int or float</strong></dt><dd><p>Please see the sklearn doc for RFECV</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regression_pipeline.feature_select.FeatureSelect.select_sequential_feature_selector">
+<span class="sig-name descname"><span class="pre">select_sequential_feature_selector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cv</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tolerance</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">njobs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/feature_select.html#FeatureSelect.select_sequential_feature_selector"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.feature_select.FeatureSelect.select_sequential_feature_selector" title="Permalink to this definition"></a></dt>
+<dd><p>Selects features according to sequential feature selection method.</p>
+<p>The sequential feature selector implemented in sklearn is being used
+here. More of it can be read from the sklearn doocumentation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>model: A model instance (i.e. LinearRegression, SVR, etc.)</strong></dt><dd></dd>
+<dt><strong>cv: int, cross-validation generator or an iterator</strong></dt><dd><p>if int, then defines the number corss-validation folds.</p>
+</dd>
+<dt><strong>tolerance: float</strong></dt><dd><p>If the score is not incremented by at least tol between
+two consecutive feature additions or removals, stop adding or
+removing. More explanation can be read from sklearn doc.</p>
+</dd>
+<dt><strong>njobs: int</strong></dt><dd><p>Number of jobs to run in parallel.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regression_pipeline.feature_select.FeatureSelect.update_org_feature_names_map">
+<span class="sig-name descname"><span class="pre">update_org_feature_names_map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">number_dropped_features</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dropped_features</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/feature_select.html#FeatureSelect.update_org_feature_names_map"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.feature_select.FeatureSelect.update_org_feature_names_map" title="Permalink to this definition"></a></dt>
+<dd><p>Updates the feature names map in case some features are dropped.</p>
+<p>During the feature selection process some features may get dropped
+completely from the data due to their low variance or other reason. In
+such case, it is necessary to keep a track of the features dropped and
+update the feature name map for book keeping.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>number_dropped_features: int</strong></dt><dd><p>Number of features dropped.</p>
+</dd>
+<dt><strong>dropped_features: A list</strong></dt><dd><p>A list of the dropped feature names</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-regression_pipeline.hyperparam_opt">
+<span id="regression-pipeline-hyperparam-opt-module"></span><h2>regression_pipeline.hyperparam_opt module<a class="headerlink" href="#module-regression_pipeline.hyperparam_opt" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="regression_pipeline.hyperparam_opt.OptunaOpt">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">regression_pipeline.hyperparam_opt.</span></span><span class="sig-name descname"><span class="pre">OptunaOpt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cv</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">njobs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scoring</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">score_funcs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/hyperparam_opt.html#OptunaOpt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.hyperparam_opt.OptunaOpt" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Optimization of hyperparameters with optuna</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>cv: int, cross-validated generator or an iterator</strong></dt><dd><p>if an int, defines the number cross-validation folds</p>
+</dd>
+<dt><strong>njobs: int</strong></dt><dd><p>number of jobs to be run in parallel</p>
+</dd>
+<dt><strong>scoring: a list of strings</strong></dt><dd><p>A list of performance metrics to be evaluated</p>
+</dd>
+<dt><strong>score_funcs: a list of strings</strong></dt><dd><p>A list of score functions from sklearn</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><strong>set_model_params():</strong></p></td>
+<td><p>creates the model parameters with their suggested values as per optuna format</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>parse_hyperparams_inp():</strong></p></td>
+<td><p>Parses the input file and getting the control parameters for optuna</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>create_model():</strong></p></td>
+<td><p>Creates a trial model with the suggested parameters</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>objective():</strong></p></td>
+<td><p>Defines the objective function to be optimized</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>run_optuna():</strong></p></td>
+<td><p>Runs the optuna optimization process</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="regression_pipeline.hyperparam_opt.OptunaOpt.create_model">
+<span class="sig-name descname"><span class="pre">create_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trial</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/hyperparam_opt.html#OptunaOpt.create_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.hyperparam_opt.OptunaOpt.create_model" title="Permalink to this definition"></a></dt>
+<dd><p>Creates a trail model with a subset of the parameters</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>trial: Optuna trial object</strong></dt><dd></dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>model: model instance</dt><dd><p>A model instance after setting the parameter values</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regression_pipeline.hyperparam_opt.OptunaOpt.objective">
+<span class="sig-name descname"><span class="pre">objective</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trial</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xtrain</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ytrain</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/hyperparam_opt.html#OptunaOpt.objective"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.hyperparam_opt.OptunaOpt.objective" title="Permalink to this definition"></a></dt>
+<dd><p>Defines the objective function to be optimized</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>trial: Optuna trial object</strong></dt><dd></dd>
+<dt><strong>xtrain: an array of shape (n_samples, n_features)</strong></dt><dd><p>Training data</p>
+</dd>
+<dt><strong>ytrain: an array of shape (n_samples, )</strong></dt><dd><p>Training target values</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>add_score: float</dt><dd><p>The addition of the cross-validated train and test scores</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regression_pipeline.hyperparam_opt.OptunaOpt.parse_hyperparams_inp">
+<span class="sig-name descname"><span class="pre">parse_hyperparams_inp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config_file</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/hyperparam_opt.html#OptunaOpt.parse_hyperparams_inp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.hyperparam_opt.OptunaOpt.parse_hyperparams_inp" title="Permalink to this definition"></a></dt>
+<dd><p>Parses the hyperparameter optimization config file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>config_file: string</strong></dt><dd><p>Name of the config file</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regression_pipeline.hyperparam_opt.OptunaOpt.run_optuna">
+<span class="sig-name descname"><span class="pre">run_optuna</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">optuna_config_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xtrain</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xtest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ytrain</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ytest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">all_selected_features</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/hyperparam_opt.html#OptunaOpt.run_optuna"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.hyperparam_opt.OptunaOpt.run_optuna" title="Permalink to this definition"></a></dt>
+<dd><p>Runs the optimization process</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>optuna_config_file: str</strong></dt><dd><p>The name of the hyperparameter optimization configuration</p>
+</dd>
+<dt><strong>xtrain: an array of shape (n_sapmles, n_features)</strong></dt><dd><p>Train data</p>
+</dd>
+<dt><strong>xtest: an array of shape (k_samples, n_features)</strong></dt><dd><p>Test data</p>
+</dd>
+<dt><strong>ytrain: an array of shape (n_samples, )</strong></dt><dd><p>Train target values</p>
+</dd>
+<dt><strong>ytest: an array of shape (k_samples, )</strong></dt><dd><p>Test target data</p>
+</dd>
+<dt><strong>all_selected_features: a list</strong></dt><dd><p>A list of all the selected subsets of features</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>all_results_df: a pandas dataframe</dt><dd><p>A dataframe of all the results and scores of the optimized models
+for each subset of features</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regression_pipeline.hyperparam_opt.OptunaOpt.set_model_params">
+<span class="sig-name descname"><span class="pre">set_model_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trial</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params_names</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params_dic</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/hyperparam_opt.html#OptunaOpt.set_model_params"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.hyperparam_opt.OptunaOpt.set_model_params" title="Permalink to this definition"></a></dt>
+<dd><p>Sets the necessary hyperparameter values as per optuna</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>trial: Optuna trial object</strong></dt><dd></dd>
+<dt><strong>params_names: a list</strong></dt><dd><p>A list of parameter names of the model to be tuned</p>
+</dd>
+<dt><strong>params_dic: a list of dictionaries</strong></dt><dd><p>A list of dictionaries indicating range values for the parameters
+to try</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-regression_pipeline.math_transformers">
+<span id="regression-pipeline-math-transformers-module"></span><h2>regression_pipeline.math_transformers module<a class="headerlink" href="#module-regression_pipeline.math_transformers" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="regression_pipeline.math_transformers.MathTransformations">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">regression_pipeline.math_transformers.</span></span><span class="sig-name descname"><span class="pre">MathTransformations</span></span><a class="reference internal" href="_modules/regression_pipeline/math_transformers.html#MathTransformations"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.math_transformers.MathTransformations" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Performs various mathemtaical transformations of the features.</p>
+<p class="rubric">Methods</p>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><strong>logtransform(X):</strong></p></td>
+<td><p>Performs log transformation.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>squaretransform(X):</strong></p></td>
+<td><p>Performs square transformation.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>squareroottransform(X):</strong></p></td>
+<td><p>Performs square root transformation.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>reciprocaltransform(X):</strong></p></td>
+<td><p>Performs reciprocal transformation.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>boxcoxtransform(X):</strong></p></td>
+<td><p>Performs pwer transformation.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>yeojohnsontransform(X):</strong></p></td>
+<td><p>Performs power transformation.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>quantiletransform(X):</strong></p></td>
+<td><p>Performs quantile transformation.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="regression_pipeline.math_transformers.MathTransformations.boxcoxtransform">
+<span class="sig-name descname"><span class="pre">boxcoxtransform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/math_transformers.html#MathTransformations.boxcoxtransform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.math_transformers.MathTransformations.boxcoxtransform" title="Permalink to this definition"></a></dt>
+<dd><p>Performs a power transformation using box-cox method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>X</strong><span class="classifier">an array</span></dt><dd><p>An array of shape (n_samples, m_features) or an array of shape
+(n_samples, ).</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regression_pipeline.math_transformers.MathTransformations.logtransform">
+<span class="sig-name descname"><span class="pre">logtransform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/math_transformers.html#MathTransformations.logtransform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.math_transformers.MathTransformations.logtransform" title="Permalink to this definition"></a></dt>
+<dd><p>Performs a logarithmic (natural log) transformation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>X</strong><span class="classifier">an array</span></dt><dd><p>An array of shape (n_samples, m_features) or an array of shape
+(n_samples, ).</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regression_pipeline.math_transformers.MathTransformations.quantiletransform">
+<span class="sig-name descname"><span class="pre">quantiletransform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/math_transformers.html#MathTransformations.quantiletransform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.math_transformers.MathTransformations.quantiletransform" title="Permalink to this definition"></a></dt>
+<dd><p>Performs a quantile transformation of the given array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>X</strong><span class="classifier">an array</span></dt><dd><p>An array of shape (n_samples, m_features) or an array of shape
+(n_samples, ).</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regression_pipeline.math_transformers.MathTransformations.reciprocaltransform">
+<span class="sig-name descname"><span class="pre">reciprocaltransform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/math_transformers.html#MathTransformations.reciprocaltransform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.math_transformers.MathTransformations.reciprocaltransform" title="Permalink to this definition"></a></dt>
+<dd><p>Performs a reciprocal transformation of the array provided.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>X</strong><span class="classifier">an array</span></dt><dd><p>An array of shape (n_samples, m_features) or an array of shape
+(n_samples, ).</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regression_pipeline.math_transformers.MathTransformations.squareroottransform">
+<span class="sig-name descname"><span class="pre">squareroottransform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/math_transformers.html#MathTransformations.squareroottransform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.math_transformers.MathTransformations.squareroottransform" title="Permalink to this definition"></a></dt>
+<dd><p>Performs a square root transformation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>X</strong><span class="classifier">an array</span></dt><dd><p>An array of shape (n_samples, m_features) or an array of shape
+(n_samples, ).</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regression_pipeline.math_transformers.MathTransformations.squaretransform">
+<span class="sig-name descname"><span class="pre">squaretransform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/math_transformers.html#MathTransformations.squaretransform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.math_transformers.MathTransformations.squaretransform" title="Permalink to this definition"></a></dt>
+<dd><p>Performs a square transformation of the given array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>X</strong><span class="classifier">an array</span></dt><dd><p>An array of shape (n_samples, m_features) or an array of shape
+(n_samples, ).</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regression_pipeline.math_transformers.MathTransformations.yeojohnsontransform">
+<span class="sig-name descname"><span class="pre">yeojohnsontransform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/math_transformers.html#MathTransformations.yeojohnsontransform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.math_transformers.MathTransformations.yeojohnsontransform" title="Permalink to this definition"></a></dt>
+<dd><p>Performs power transformation using Yeo-Johnson method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>X</strong><span class="classifier">an array</span></dt><dd><p>An array of shape (n_samples, m_features) or an array of shape
+(n_samples, ).</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-regression_pipeline.preprocess">
+<span id="regression-pipeline-preprocess-module"></span><h2>regression_pipeline.preprocess module<a class="headerlink" href="#module-regression_pipeline.preprocess" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="regression_pipeline.preprocess.PreProcessData">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">regression_pipeline.preprocess.</span></span><span class="sig-name descname"><span class="pre">PreProcessData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/preprocess.html#PreProcessData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.preprocess.PreProcessData" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Pre-processes the raw data.</p>
+<p>The raw data is processed with different methods to make it ready for the
+algorithm to run on.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>df: a pandas dataframe</strong></dt><dd><p>The raw data in a pandas dataframe.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Attributes<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>X_train_: a pandas dataframe (n_samples, n_features)</strong></dt><dd><p>Train data</p>
+</dd>
+<dt><strong>X_test_: an pandas dataframe (k_samples, n_features)</strong></dt><dd><p>Test data</p>
+</dd>
+<dt><strong>y_train_: a pandas series (n_samples,)</strong></dt><dd><p>Train target values</p>
+</dd>
+<dt><strong>y_test_: a pandas series (k_samples, )</strong></dt><dd><p>Test target values</p>
+</dd>
+<dt><strong>X_train_scl_: an array of shape (n_samples, n_features)</strong></dt><dd><p>Scaled training data</p>
+</dd>
+<dt><strong>X_test_scl_: an array of shape (k_samples, n_features)</strong></dt><dd><p>Scaled test data</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><strong>fill_na():</strong></p></td>
+<td><p>Fills the null values in the data with appropriate values.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>split_data():</strong></p></td>
+<td><p>Splits the data and create a training and a test datasets.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>encode_categorical_features():</strong></p></td>
+<td><p>Encodes the categorical features with appropriate algorithm.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>scaling_data():</strong></p></td>
+<td><p>Scales the data in order to have all features in same scale.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="regression_pipeline.preprocess.PreProcessData.encode_categorical_features">
+<span class="sig-name descname"><span class="pre">encode_categorical_features</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">encoders</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">features_to_encode</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ordinal_encode_map</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/preprocess.html#PreProcessData.encode_categorical_features"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.preprocess.PreProcessData.encode_categorical_features" title="Permalink to this definition"></a></dt>
+<dd><p>Encodes the categorical features with the desired encoder.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>encoders: a list of strings</strong></dt><dd><p>The desired encoder key-words to encode the features.</p>
+</dd>
+<dt><strong>features_to_encode: a dict</strong></dt><dd><p>A dictionary with keys being the encoder key-word and the values
+being the list of features to be encoded.</p>
+</dd>
+<dt><strong>ordinal_encode_map: a list of dictionaries</strong></dt><dd><p>A list of dictionaries defining the required maps for ordinal
+encoding and the feature names to be encoded.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regression_pipeline.preprocess.PreProcessData.fill_na">
+<span class="sig-name descname"><span class="pre">fill_na</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fill_val_def</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/preprocess.html#PreProcessData.fill_na"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.preprocess.PreProcessData.fill_na" title="Permalink to this definition"></a></dt>
+<dd><p>Fills the missing values (NAs) or the null values.</p>
+<p>The null values in the data need to be treated appropriately so that we
+do not loose on the critical information. This function allows one to
+fill in those null values with the mean, median or the mode of the
+feature. The way of filling in the null vallues depends upon the
+problem and other situations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>fill_val_def: str</strong></dt><dd><p>String(i.e. mean, median, or mode) to define the way to fill the NA
+values.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regression_pipeline.preprocess.PreProcessData.scaling_data">
+<span class="sig-name descname"><span class="pre">scaling_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scaler</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/preprocess.html#PreProcessData.scaling_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.preprocess.PreProcessData.scaling_data" title="Permalink to this definition"></a></dt>
+<dd><p>Scales the features with the desired scaler.</p>
+<p>The features may have very different scales of measurements. In such
+case, the features need to be scaled to have features in the similar
+scale.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regression_pipeline.preprocess.PreProcessData.split_data">
+<span class="sig-name descname"><span class="pre">split_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Target_col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">requires_target_transformation</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_transformer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">requires_feature_transformation</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">features_transfromers_dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/preprocess.html#PreProcessData.split_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.preprocess.PreProcessData.split_data" title="Permalink to this definition"></a></dt>
+<dd><p>Splits data and creates train and test data.</p>
+<p>This function uses the sklearn train_test_split method to create train
+and test data. Also, transforms the data as per requirement with the
+appropriate math function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>Target_col: string</strong></dt><dd><p>The name of the target in the dataf.</p>
+</dd>
+<dt><strong>requires_target_transformation: string (either “True” or “False”)</strong></dt><dd><p>Indicates whether requires math transformation of the target
+values.</p>
+</dd>
+<dt><strong>target_transformer: string</strong></dt><dd><p>Indicates the type of transformation requires. The available
+transformer keywords are:
+(logtransform, squaretransform, squareroottransform,
+reciprocaltransform, boxcoxtransform,
+yeojohnsontransform, quantiletransform)</p>
+</dd>
+<dt><strong>requires_feature_transformation: string (either “True” or “False”)</strong></dt><dd><p>Indicates whether requires any math transformation of any features
+in the data.</p>
+</dd>
+<dt><strong>features_transfromers_dict: a dictionary</strong></dt><dd><p>A dictionary of maping the feature name and the corresponding
+required transformation (i.e. {“feat1”: “logtransform”, “feat2”:
+“squaretransform”})</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-regression_pipeline.utils">
+<span id="regression-pipeline-utils-module"></span><h2>regression_pipeline.utils module<a class="headerlink" href="#module-regression_pipeline.utils" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="regression_pipeline.utils.Utilities">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">regression_pipeline.utils.</span></span><span class="sig-name descname"><span class="pre">Utilities</span></span><a class="reference internal" href="_modules/regression_pipeline/utils.html#Utilities"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.utils.Utilities" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Performs various utility tasks required during ML model selection run</p>
+<p class="rubric">Methods</p>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><strong>extract_raw_feature_names():</strong></p></td>
+<td><p>Extracts the original feature names from the subscripted feature names</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>filter_features():</strong></p></td>
+<td><p>Filters out the unwanted features from the given training or test dataset.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>calculate_VIF():</strong></p></td>
+<td><p>Calculates variance inflation factor for the features in the dataset</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="regression_pipeline.utils.Utilities.calculate_VIF">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">calculate_VIF</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/utils.html#Utilities.calculate_VIF"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.utils.Utilities.calculate_VIF" title="Permalink to this definition"></a></dt>
+<dd><p>Calculates the variance inflation factor (VIF) of the features</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>X: numpy array of shape (n_samples, n_features)</strong></dt><dd><p>The numeric features of the training set</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>vif_data: A pandas dataframe</dt><dd><p>vif values of each of the features in the training set</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regression_pipeline.utils.Utilities.extract_raw_feature_names">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">extract_raw_feature_names</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">feature_subset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feature_names_map</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/utils.html#Utilities.extract_raw_feature_names"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.utils.Utilities.extract_raw_feature_names" title="Permalink to this definition"></a></dt>
+<dd><p>Extracts the original feature names in the raw data for the selected feature subsets</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>feature_subset: an array</strong></dt><dd><p>Selected feature names in the x0,x1,x2…..form</p>
+</dd>
+<dt><strong>feature_names_map: A dictionary</strong></dt><dd><p>The original feature names mapped to subscripted feature names</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>feature_names_raw: A list</dt><dd><p>Orginal feature names corresponding to the subscripted features in the feature_susbet</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regression_pipeline.utils.Utilities.filter_features">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">filter_features</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feature_subset</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/utils.html#Utilities.filter_features"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.utils.Utilities.filter_features" title="Permalink to this definition"></a></dt>
+<dd><p>Filters out the less important features from the data</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>X: numpy array of shape (n_samples, n_features)</strong></dt><dd><p>Training/test data</p>
+</dd>
+<dt><strong>subset_features: an array</strong></dt><dd><p>Selected relevant feature names</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>X_filtered: numpy array of shape (n_samples, n_features - k)</dt><dd><p>Filtered datasets set</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-regression_pipeline.vizualization">
+<span id="regression-pipeline-vizualization-module"></span><h2>regression_pipeline.vizualization module<a class="headerlink" href="#module-regression_pipeline.vizualization" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="regression_pipeline.vizualization.VisualizationData">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">regression_pipeline.vizualization.</span></span><span class="sig-name descname"><span class="pre">VisualizationData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">results</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/vizualization.html#VisualizationData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.vizualization.VisualizationData" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Creates various vizualization plots.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>results</strong><span class="classifier">a pandas dataframe</span></dt><dd><p>A dataframe of all the accumulated performance metrics of all the
+models tried.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><strong>plot_train_test_scores():</strong></p></td>
+<td><p>Plots the train and test scores for the whole data set.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>plot_cv_train_test_scores():</strong></p></td>
+<td><p>Plots the cross-validated train and test scores of the models.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>plot_pvalues():</strong></p></td>
+<td><p>Plots the p-values of the ttest performed on the cross-validated scores.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="regression_pipeline.vizualization.VisualizationData.plot_confidence_intervals">
+<span class="sig-name descname"><span class="pre">plot_confidence_intervals</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/vizualization.html#VisualizationData.plot_confidence_intervals"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.vizualization.VisualizationData.plot_confidence_intervals" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regression_pipeline.vizualization.VisualizationData.plot_cv_train_test_scores">
+<span class="sig-name descname"><span class="pre">plot_cv_train_test_scores</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/vizualization.html#VisualizationData.plot_cv_train_test_scores"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.vizualization.VisualizationData.plot_cv_train_test_scores" title="Permalink to this definition"></a></dt>
+<dd><p>Plots cross-validated train test scores.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regression_pipeline.vizualization.VisualizationData.plot_pvalues">
+<span class="sig-name descname"><span class="pre">plot_pvalues</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/vizualization.html#VisualizationData.plot_pvalues"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.vizualization.VisualizationData.plot_pvalues" title="Permalink to this definition"></a></dt>
+<dd><p>Plots p-values of ttest performed on the cross-validated scores</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regression_pipeline.vizualization.VisualizationData.plot_train_test_scores">
+<span class="sig-name descname"><span class="pre">plot_train_test_scores</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/vizualization.html#VisualizationData.plot_train_test_scores"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.vizualization.VisualizationData.plot_train_test_scores" title="Permalink to this definition"></a></dt>
+<dd><p>Plots train test scores on the whole dataset.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-regression_pipeline">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-regression_pipeline" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="regression_pipeline.FeatureSelect">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">regression_pipeline.</span></span><span class="sig-name descname"><span class="pre">FeatureSelect</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xtrain</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xtest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ytrain</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feature_names</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/feature_select.html#FeatureSelect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.FeatureSelect" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Feature selection process</p>
+<p>Variety of feature selection methods are employed in order to obtain
+sets of important features.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>xtrain</strong><span class="classifier">numpy ndarray</span></dt><dd><p>Training data</p>
+</dd>
+<dt><strong>xtest</strong><span class="classifier">numpy ndarray</span></dt><dd><p>Test dataset</p>
+</dd>
+<dt><strong>ytrain</strong><span class="classifier">numpy ndarray</span></dt><dd><p>Training target</p>
+</dd>
+<dt><strong>feature_names</strong><span class="classifier">a list</span></dt><dd><p>A list of all the feature names.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Attributes<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>org_feature_names_sub_</strong><span class="classifier">an array of shape (n_features, )</span></dt><dd><p>An array of dummy feature names in the subscripted form like x0, x1,
+x2…xn.</p>
+</dd>
+<dt><strong>org_feature_names_map_</strong><span class="classifier">a dictionary</span></dt><dd><p>A dictionary that maps the dummy features to the original feature names
+of the problem at hand.</p>
+</dd>
+<dt><strong>updat_feature_names_sub_</strong><span class="classifier">an array of shape (k_features, )</span></dt><dd><p>An array of the updated dummy features when some features are dropped
+from the data.</p>
+</dd>
+<dt><strong>updat_feature_names_map_</strong><span class="classifier">a dictionary</span></dt><dd><p>A dictionary of the updated map of the dummy features to the original
+features.</p>
+</dd>
+<dt><strong>all_selected_features_</strong><span class="classifier">a list</span></dt><dd><p>A list of all the feature subsets selected by various methods.</p>
+</dd>
+<dt><strong>selected_features_</strong><span class="classifier">a list</span></dt><dd><p>A list of selected feature names selected by majority voting.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><strong>create_feature_names_sub():</strong></p></td>
+<td><p>Creates an array of feature names in the form x0, x1, x2,…..,xn.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>map_orig_feature_name():</strong></p></td>
+<td><p>Maps the orginal feature names with the feature names in the form x0,x1,…..xn.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>update_org_feature_names_map(number_dropped_features, dropped_features):</strong></p></td>
+<td><p>Updates feature names and the feature map.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>filter_low_variance_features():</strong></p></td>
+<td><p>Drops feature whose variance is low or zero.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>select_recursive_feature_elimination(model):</strong></p></td>
+<td><p>Selects features with recusrsive feature elimination method.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>select_borutapy(rf):</strong></p></td>
+<td><p>Selects features with BorutaPy algorithm.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>select_fregression():</strong></p></td>
+<td><p>Selects features with correlation significance with the target.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>select_sequential_feature_selector(model):</strong></p></td>
+<td><p>Selects feature with sequential feature selection method.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>select_feature_low_vif():</strong></p></td>
+<td><p>Selects feature with low variance inflation factor avoiding multicolinierity.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>select_features_vote(rf, model):</strong></p></td>
+<td><p>Selects features having majority selection by various methods.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="regression_pipeline.FeatureSelect.create_feature_names_sub">
+<span class="sig-name descname"><span class="pre">create_feature_names_sub</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/feature_select.html#FeatureSelect.create_feature_names_sub"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.FeatureSelect.create_feature_names_sub" title="Permalink to this definition"></a></dt>
+<dd><p>Creates an array of dummy feature names</p>
+<p>A set of feature names in the form of x0, x1, x2,….xn are created as
+these will be used while running the machine learning algorithms with
+the data in an array form of shape (n_samples, n_features).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regression_pipeline.FeatureSelect.filter_low_variance_features">
+<span class="sig-name descname"><span class="pre">filter_low_variance_features</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">var_threshold</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/feature_select.html#FeatureSelect.filter_low_variance_features"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.FeatureSelect.filter_low_variance_features" title="Permalink to this definition"></a></dt>
+<dd><p>Filters features that have low variance than the threshold</p>
+<p>Some features in the data may have zero variance or variance much lower
+than the pre-set threshold. Such features are carry not much
+information and hence need to be dropped from the data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>var_threshold: float</strong></dt><dd><p>Threshold for the variance for dropping a particular feature from
+the data.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regression_pipeline.FeatureSelect.map_orig_feature_names">
+<span class="sig-name descname"><span class="pre">map_orig_feature_names</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/feature_select.html#FeatureSelect.map_orig_feature_names"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.FeatureSelect.map_orig_feature_names" title="Permalink to this definition"></a></dt>
+<dd><p>Maps the dummy feature names to the original feature names.</p>
+<p>The original feature names are necessary in order to interpret the
+models. Therefor, this function maps the dummy features (x0, x1,
+x2,…xn) in to the corresponding original feature names of the problem
+of interest. A dictionary is created with the keys being the dummy
+features and the values being the original feature names.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regression_pipeline.FeatureSelect.select_borutapy">
+<span class="sig-name descname"><span class="pre">select_borutapy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/feature_select.html#FeatureSelect.select_borutapy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.FeatureSelect.select_borutapy" title="Permalink to this definition"></a></dt>
+<dd><p>Selects features employing BortaPy algorithm</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>rf: A random forest regression instance</strong></dt><dd></dd>
+<dt><strong>random_state: int</strong></dt><dd><p>Seed value to control the random number generator</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regression_pipeline.FeatureSelect.select_feature_low_vif">
+<span class="sig-name descname"><span class="pre">select_feature_low_vif</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/feature_select.html#FeatureSelect.select_feature_low_vif"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.FeatureSelect.select_feature_low_vif" title="Permalink to this definition"></a></dt>
+<dd><p>Selects features with low variance inflation factor (VIF)</p>
+<p>VIF is a key indicator of multicolinearity among the features. if VIF
+is higher, say closer to 10 or higher, then such features are highly
+correlated with other features and need to be dropped. Which features
+need to be dropped is based on the problem at hand and the feasibility
+of the data.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regression_pipeline.FeatureSelect.select_features_vote">
+<span class="sig-name descname"><span class="pre">select_features_vote</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cv</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">njobs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tolerance</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">var_threshold</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pval</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step_rfe</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/feature_select.html#FeatureSelect.select_features_vote"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.FeatureSelect.select_features_vote" title="Permalink to this definition"></a></dt>
+<dd><p>Selects features that are selected by majority of the methods as
+above</p>
+<p>Feature which are selected by majority of the methods implemented here
+are supposed to be important features. This function selects the
+features based on majority voting.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>rf: A random forest regression instance</strong></dt><dd></dd>
+<dt><strong>model: A model instance (i.e. LinearRegression, SVR, etc..)</strong></dt><dd></dd>
+<dt><strong>cv: int, cross-validation generator or an iterator</strong></dt><dd><p>if int, then defines the number of cross-validation folds</p>
+</dd>
+<dt><strong>njobs: int</strong></dt><dd><p>number of jobs to run in parallel</p>
+</dd>
+<dt><strong>tolerance: float</strong></dt><dd><p>If the score is not incremented by at least tol between
+two consecutive feature additions or removals, stop adding or
+removing. More explanation can be read from sklearn doc.</p>
+</dd>
+<dt><strong>var_threshold: float</strong></dt><dd><p>Threshold for the variance for dropping a particular feature from
+the data.</p>
+</dd>
+<dt><strong>pval: float</strong></dt><dd><p>p-value threshold in order to decide if the regression is
+significant or not.</p>
+</dd>
+<dt><strong>random_state: int</strong></dt><dd><p>Seed value to control the random number generator</p>
+</dd>
+<dt><strong>step_rfe: int or float</strong></dt><dd><p>Please see the sklearn doc for RFECV</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regression_pipeline.FeatureSelect.select_fregression">
+<span class="sig-name descname"><span class="pre">select_fregression</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pval</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/feature_select.html#FeatureSelect.select_fregression"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.FeatureSelect.select_fregression" title="Permalink to this definition"></a></dt>
+<dd><p>Selects features based on univariate linear regression tests</p>
+<p>The f_regression algorithm as implemented in sklearn is being used
+here. More can be read from the sklearn f_regression documentation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>pval: float</strong></dt><dd><p>p-value threshold in order to decide if the regression is
+significant or not.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regression_pipeline.FeatureSelect.select_recursive_feature_elimination">
+<span class="sig-name descname"><span class="pre">select_recursive_feature_elimination</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cv</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step_rfe</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/feature_select.html#FeatureSelect.select_recursive_feature_elimination"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.FeatureSelect.select_recursive_feature_elimination" title="Permalink to this definition"></a></dt>
+<dd><p>Selects features using recursive feature elimination method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>model: A model instance (i.e. LinearRegression, SVR, etc.)</strong></dt><dd></dd>
+<dt><strong>cv: int, cross-validation generator or an iterable</strong></dt><dd><p>if integer, then defines the number of cross-validation folds</p>
+</dd>
+<dt><strong>step_rfe: int or float</strong></dt><dd><p>Please see the sklearn doc for RFECV</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regression_pipeline.FeatureSelect.select_sequential_feature_selector">
+<span class="sig-name descname"><span class="pre">select_sequential_feature_selector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cv</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tolerance</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">njobs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/feature_select.html#FeatureSelect.select_sequential_feature_selector"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.FeatureSelect.select_sequential_feature_selector" title="Permalink to this definition"></a></dt>
+<dd><p>Selects features according to sequential feature selection method.</p>
+<p>The sequential feature selector implemented in sklearn is being used
+here. More of it can be read from the sklearn doocumentation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>model: A model instance (i.e. LinearRegression, SVR, etc.)</strong></dt><dd></dd>
+<dt><strong>cv: int, cross-validation generator or an iterator</strong></dt><dd><p>if int, then defines the number corss-validation folds.</p>
+</dd>
+<dt><strong>tolerance: float</strong></dt><dd><p>If the score is not incremented by at least tol between
+two consecutive feature additions or removals, stop adding or
+removing. More explanation can be read from sklearn doc.</p>
+</dd>
+<dt><strong>njobs: int</strong></dt><dd><p>Number of jobs to run in parallel.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regression_pipeline.FeatureSelect.update_org_feature_names_map">
+<span class="sig-name descname"><span class="pre">update_org_feature_names_map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">number_dropped_features</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dropped_features</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/feature_select.html#FeatureSelect.update_org_feature_names_map"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.FeatureSelect.update_org_feature_names_map" title="Permalink to this definition"></a></dt>
+<dd><p>Updates the feature names map in case some features are dropped.</p>
+<p>During the feature selection process some features may get dropped
+completely from the data due to their low variance or other reason. In
+such case, it is necessary to keep a track of the features dropped and
+update the feature name map for book keeping.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>number_dropped_features: int</strong></dt><dd><p>Number of features dropped.</p>
+</dd>
+<dt><strong>dropped_features: A list</strong></dt><dd><p>A list of the dropped feature names</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="regression_pipeline.MathTransformations">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">regression_pipeline.</span></span><span class="sig-name descname"><span class="pre">MathTransformations</span></span><a class="reference internal" href="_modules/regression_pipeline/math_transformers.html#MathTransformations"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.MathTransformations" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Performs various mathemtaical transformations of the features.</p>
+<p class="rubric">Methods</p>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><strong>logtransform(X):</strong></p></td>
+<td><p>Performs log transformation.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>squaretransform(X):</strong></p></td>
+<td><p>Performs square transformation.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>squareroottransform(X):</strong></p></td>
+<td><p>Performs square root transformation.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>reciprocaltransform(X):</strong></p></td>
+<td><p>Performs reciprocal transformation.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>boxcoxtransform(X):</strong></p></td>
+<td><p>Performs pwer transformation.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>yeojohnsontransform(X):</strong></p></td>
+<td><p>Performs power transformation.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>quantiletransform(X):</strong></p></td>
+<td><p>Performs quantile transformation.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="regression_pipeline.MathTransformations.boxcoxtransform">
+<span class="sig-name descname"><span class="pre">boxcoxtransform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/math_transformers.html#MathTransformations.boxcoxtransform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.MathTransformations.boxcoxtransform" title="Permalink to this definition"></a></dt>
+<dd><p>Performs a power transformation using box-cox method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>X</strong><span class="classifier">an array</span></dt><dd><p>An array of shape (n_samples, m_features) or an array of shape
+(n_samples, ).</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regression_pipeline.MathTransformations.logtransform">
+<span class="sig-name descname"><span class="pre">logtransform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/math_transformers.html#MathTransformations.logtransform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.MathTransformations.logtransform" title="Permalink to this definition"></a></dt>
+<dd><p>Performs a logarithmic (natural log) transformation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>X</strong><span class="classifier">an array</span></dt><dd><p>An array of shape (n_samples, m_features) or an array of shape
+(n_samples, ).</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regression_pipeline.MathTransformations.quantiletransform">
+<span class="sig-name descname"><span class="pre">quantiletransform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/math_transformers.html#MathTransformations.quantiletransform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.MathTransformations.quantiletransform" title="Permalink to this definition"></a></dt>
+<dd><p>Performs a quantile transformation of the given array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>X</strong><span class="classifier">an array</span></dt><dd><p>An array of shape (n_samples, m_features) or an array of shape
+(n_samples, ).</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regression_pipeline.MathTransformations.reciprocaltransform">
+<span class="sig-name descname"><span class="pre">reciprocaltransform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/math_transformers.html#MathTransformations.reciprocaltransform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.MathTransformations.reciprocaltransform" title="Permalink to this definition"></a></dt>
+<dd><p>Performs a reciprocal transformation of the array provided.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>X</strong><span class="classifier">an array</span></dt><dd><p>An array of shape (n_samples, m_features) or an array of shape
+(n_samples, ).</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regression_pipeline.MathTransformations.squareroottransform">
+<span class="sig-name descname"><span class="pre">squareroottransform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/math_transformers.html#MathTransformations.squareroottransform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.MathTransformations.squareroottransform" title="Permalink to this definition"></a></dt>
+<dd><p>Performs a square root transformation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>X</strong><span class="classifier">an array</span></dt><dd><p>An array of shape (n_samples, m_features) or an array of shape
+(n_samples, ).</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regression_pipeline.MathTransformations.squaretransform">
+<span class="sig-name descname"><span class="pre">squaretransform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/math_transformers.html#MathTransformations.squaretransform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.MathTransformations.squaretransform" title="Permalink to this definition"></a></dt>
+<dd><p>Performs a square transformation of the given array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>X</strong><span class="classifier">an array</span></dt><dd><p>An array of shape (n_samples, m_features) or an array of shape
+(n_samples, ).</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regression_pipeline.MathTransformations.yeojohnsontransform">
+<span class="sig-name descname"><span class="pre">yeojohnsontransform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/math_transformers.html#MathTransformations.yeojohnsontransform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.MathTransformations.yeojohnsontransform" title="Permalink to this definition"></a></dt>
+<dd><p>Performs power transformation using Yeo-Johnson method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>X</strong><span class="classifier">an array</span></dt><dd><p>An array of shape (n_samples, m_features) or an array of shape
+(n_samples, ).</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="regression_pipeline.ModelSelection">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">regression_pipeline.</span></span><span class="sig-name descname"><span class="pre">ModelSelection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">all_feature_sets</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scoring</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">score_funcs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cv</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">njobs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/evalmodels.html#ModelSelection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.ModelSelection" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Performs model selection using various feature sets and models.</p>
+<p>This class implements methods in order to figure out the best performing
+models out of all the models under trial along with the best feature set.
+However, the models are the vanila models without any fine tuning of the
+parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>all_feature_sets: a list of lists of strings</strong></dt><dd><p>a list of various feature sets obtained from feature selection methods</p>
+</dd>
+<dt><strong>scoring: a list of strings</strong></dt><dd><p>A list of scoring metrics to evaluate the models (i.e.
+neg_mean_squared_error)</p>
+</dd>
+<dt><strong>score_funcs: a list of strings</strong></dt><dd><p>A list of score functions to evaluate the models (i.e.
+mean_squared_error)</p>
+</dd>
+<dt><strong>cv: int, cross-validation generator or an iterator</strong></dt><dd><p>if int, defines the number of cross-validated folds</p>
+</dd>
+<dt><strong>njobs: int</strong></dt><dd><p>Number of jobs to be run in parallel</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><strong>evaluate_model_performance(model, xtrain, xtest, ytrain, ytest):</strong></p></td>
+<td><p>Evaluates the performance of the given model in terms of the provided metrics.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>run_model_selection(models, xtrain, xtest, ytrain, ytest, feature_names_map):</strong></p></td>
+<td><p>Runs the model selection process with different feature sets and models.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="regression_pipeline.ModelSelection.evaluate_model_performance">
+<span class="sig-name descname"><span class="pre">evaluate_model_performance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xtrain</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xtest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ytrain</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ytest</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/evalmodels.html#ModelSelection.evaluate_model_performance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.ModelSelection.evaluate_model_performance" title="Permalink to this definition"></a></dt>
+<dd><p>Evaluates performance of a model on the training and test data.</p>
+<p>The model performance is evaluated in terms of the appropriate metric
+relevant to the problem at hand. Also performs a ttest on the
+cross-validated scores of the model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>model: An instance of the model for which the performance is being</strong></dt><dd><p>evaluated</p>
+</dd>
+<dt><strong>xtrain: an array of shape (n_samples, n_features)</strong></dt><dd><p>Train data</p>
+</dd>
+<dt><strong>xtest: an array of shape (m_samples, n_features)</strong></dt><dd><p>Test data</p>
+</dd>
+<dt><strong>ytrain: an array of shape(n_samples,)</strong></dt><dd><p>Target values of train data</p>
+</dd>
+<dt><strong>ytest: an array of shape (m_samples, )</strong></dt><dd><p>Target values of test data</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>mean_results_df: a pandas dataframe</dt><dd><p>all the performance results w.r.t. the train and test data</p>
+</dd>
+<dt>ci_train: a tuple of floats</dt><dd><p>the confidence intervals of the predicted mean of the train data</p>
+</dd>
+<dt>ci_test: a tuple of floats</dt><dd><p>the confidence intervals of the predicted mean of the test data</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regression_pipeline.ModelSelection.run_model_selection">
+<span class="sig-name descname"><span class="pre">run_model_selection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">models</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xtrain</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xtest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ytrain</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ytest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feature_names_map</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/evalmodels.html#ModelSelection.run_model_selection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.ModelSelection.run_model_selection" title="Permalink to this definition"></a></dt>
+<dd><p>Runs model selection process.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>models: a list</strong></dt><dd><p>A list of model instances to be tested</p>
+</dd>
+<dt><strong>xtrain: an array of shape (n_samples, n_features)</strong></dt><dd><p>Training data</p>
+</dd>
+<dt><strong>xtest: an array of shape (m_samples, n_features)</strong></dt><dd><p>Test data</p>
+</dd>
+<dt><strong>ytrain: an array of shape (n_samples, )</strong></dt><dd><p>Training target values</p>
+</dd>
+<dt><strong>ytest: an array of shape (m_samples, )</strong></dt><dd><p>Test target values</p>
+</dd>
+<dt><strong>feature_names_map: a dict</strong></dt><dd><p>A dictionary mapping the dummy feature names to the original
+feature names</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>all_results_df: a pandas dataframe</dt><dd><p>performance results of the models tried in the study</p>
+</dd>
+<dt>diffnt_trial_features: a dict</dt><dd><p>A dictionary of the vaious feature sets that were tried in terms
+of the orginal feature names</p>
+</dd>
+<dt>ci_train_all: a list of tuples</dt><dd><p>a list of tuples of the confidence intervals w.r.t. the training
+data for all the models</p>
+</dd>
+<dt>ci_test_all: a list of tuples</dt><dd><p>A list of tuples of the confidence intervals w.r.t. the test data
+for all the models tried</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="regression_pipeline.OptunaOpt">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">regression_pipeline.</span></span><span class="sig-name descname"><span class="pre">OptunaOpt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cv</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">njobs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scoring</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">score_funcs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/hyperparam_opt.html#OptunaOpt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.OptunaOpt" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Optimization of hyperparameters with optuna</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>cv: int, cross-validated generator or an iterator</strong></dt><dd><p>if an int, defines the number cross-validation folds</p>
+</dd>
+<dt><strong>njobs: int</strong></dt><dd><p>number of jobs to be run in parallel</p>
+</dd>
+<dt><strong>scoring: a list of strings</strong></dt><dd><p>A list of performance metrics to be evaluated</p>
+</dd>
+<dt><strong>score_funcs: a list of strings</strong></dt><dd><p>A list of score functions from sklearn</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><strong>set_model_params():</strong></p></td>
+<td><p>creates the model parameters with their suggested values as per optuna format</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>parse_hyperparams_inp():</strong></p></td>
+<td><p>Parses the input file and getting the control parameters for optuna</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>create_model():</strong></p></td>
+<td><p>Creates a trial model with the suggested parameters</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>objective():</strong></p></td>
+<td><p>Defines the objective function to be optimized</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>run_optuna():</strong></p></td>
+<td><p>Runs the optuna optimization process</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="regression_pipeline.OptunaOpt.create_model">
+<span class="sig-name descname"><span class="pre">create_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trial</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/hyperparam_opt.html#OptunaOpt.create_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.OptunaOpt.create_model" title="Permalink to this definition"></a></dt>
+<dd><p>Creates a trail model with a subset of the parameters</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>trial: Optuna trial object</strong></dt><dd></dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>model: model instance</dt><dd><p>A model instance after setting the parameter values</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regression_pipeline.OptunaOpt.objective">
+<span class="sig-name descname"><span class="pre">objective</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trial</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xtrain</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ytrain</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/hyperparam_opt.html#OptunaOpt.objective"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.OptunaOpt.objective" title="Permalink to this definition"></a></dt>
+<dd><p>Defines the objective function to be optimized</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>trial: Optuna trial object</strong></dt><dd></dd>
+<dt><strong>xtrain: an array of shape (n_samples, n_features)</strong></dt><dd><p>Training data</p>
+</dd>
+<dt><strong>ytrain: an array of shape (n_samples, )</strong></dt><dd><p>Training target values</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>add_score: float</dt><dd><p>The addition of the cross-validated train and test scores</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regression_pipeline.OptunaOpt.parse_hyperparams_inp">
+<span class="sig-name descname"><span class="pre">parse_hyperparams_inp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config_file</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/hyperparam_opt.html#OptunaOpt.parse_hyperparams_inp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.OptunaOpt.parse_hyperparams_inp" title="Permalink to this definition"></a></dt>
+<dd><p>Parses the hyperparameter optimization config file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>config_file: string</strong></dt><dd><p>Name of the config file</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regression_pipeline.OptunaOpt.run_optuna">
+<span class="sig-name descname"><span class="pre">run_optuna</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">optuna_config_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xtrain</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xtest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ytrain</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ytest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">all_selected_features</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/hyperparam_opt.html#OptunaOpt.run_optuna"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.OptunaOpt.run_optuna" title="Permalink to this definition"></a></dt>
+<dd><p>Runs the optimization process</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>optuna_config_file: str</strong></dt><dd><p>The name of the hyperparameter optimization configuration</p>
+</dd>
+<dt><strong>xtrain: an array of shape (n_sapmles, n_features)</strong></dt><dd><p>Train data</p>
+</dd>
+<dt><strong>xtest: an array of shape (k_samples, n_features)</strong></dt><dd><p>Test data</p>
+</dd>
+<dt><strong>ytrain: an array of shape (n_samples, )</strong></dt><dd><p>Train target values</p>
+</dd>
+<dt><strong>ytest: an array of shape (k_samples, )</strong></dt><dd><p>Test target data</p>
+</dd>
+<dt><strong>all_selected_features: a list</strong></dt><dd><p>A list of all the selected subsets of features</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>all_results_df: a pandas dataframe</dt><dd><p>A dataframe of all the results and scores of the optimized models
+for each subset of features</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regression_pipeline.OptunaOpt.set_model_params">
+<span class="sig-name descname"><span class="pre">set_model_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trial</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params_names</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params_dic</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/hyperparam_opt.html#OptunaOpt.set_model_params"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.OptunaOpt.set_model_params" title="Permalink to this definition"></a></dt>
+<dd><p>Sets the necessary hyperparameter values as per optuna</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>trial: Optuna trial object</strong></dt><dd></dd>
+<dt><strong>params_names: a list</strong></dt><dd><p>A list of parameter names of the model to be tuned</p>
+</dd>
+<dt><strong>params_dic: a list of dictionaries</strong></dt><dd><p>A list of dictionaries indicating range values for the parameters
+to try</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="regression_pipeline.PreProcessData">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">regression_pipeline.</span></span><span class="sig-name descname"><span class="pre">PreProcessData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/preprocess.html#PreProcessData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.PreProcessData" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Pre-processes the raw data.</p>
+<p>The raw data is processed with different methods to make it ready for the
+algorithm to run on.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>df: a pandas dataframe</strong></dt><dd><p>The raw data in a pandas dataframe.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Attributes<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>X_train_: a pandas dataframe (n_samples, n_features)</strong></dt><dd><p>Train data</p>
+</dd>
+<dt><strong>X_test_: an pandas dataframe (k_samples, n_features)</strong></dt><dd><p>Test data</p>
+</dd>
+<dt><strong>y_train_: a pandas series (n_samples,)</strong></dt><dd><p>Train target values</p>
+</dd>
+<dt><strong>y_test_: a pandas series (k_samples, )</strong></dt><dd><p>Test target values</p>
+</dd>
+<dt><strong>X_train_scl_: an array of shape (n_samples, n_features)</strong></dt><dd><p>Scaled training data</p>
+</dd>
+<dt><strong>X_test_scl_: an array of shape (k_samples, n_features)</strong></dt><dd><p>Scaled test data</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><strong>fill_na():</strong></p></td>
+<td><p>Fills the null values in the data with appropriate values.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>split_data():</strong></p></td>
+<td><p>Splits the data and create a training and a test datasets.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>encode_categorical_features():</strong></p></td>
+<td><p>Encodes the categorical features with appropriate algorithm.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>scaling_data():</strong></p></td>
+<td><p>Scales the data in order to have all features in same scale.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="regression_pipeline.PreProcessData.encode_categorical_features">
+<span class="sig-name descname"><span class="pre">encode_categorical_features</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">encoders</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">features_to_encode</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ordinal_encode_map</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/preprocess.html#PreProcessData.encode_categorical_features"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.PreProcessData.encode_categorical_features" title="Permalink to this definition"></a></dt>
+<dd><p>Encodes the categorical features with the desired encoder.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>encoders: a list of strings</strong></dt><dd><p>The desired encoder key-words to encode the features.</p>
+</dd>
+<dt><strong>features_to_encode: a dict</strong></dt><dd><p>A dictionary with keys being the encoder key-word and the values
+being the list of features to be encoded.</p>
+</dd>
+<dt><strong>ordinal_encode_map: a list of dictionaries</strong></dt><dd><p>A list of dictionaries defining the required maps for ordinal
+encoding and the feature names to be encoded.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regression_pipeline.PreProcessData.fill_na">
+<span class="sig-name descname"><span class="pre">fill_na</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fill_val_def</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/preprocess.html#PreProcessData.fill_na"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.PreProcessData.fill_na" title="Permalink to this definition"></a></dt>
+<dd><p>Fills the missing values (NAs) or the null values.</p>
+<p>The null values in the data need to be treated appropriately so that we
+do not loose on the critical information. This function allows one to
+fill in those null values with the mean, median or the mode of the
+feature. The way of filling in the null vallues depends upon the
+problem and other situations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>fill_val_def: str</strong></dt><dd><p>String(i.e. mean, median, or mode) to define the way to fill the NA
+values.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regression_pipeline.PreProcessData.scaling_data">
+<span class="sig-name descname"><span class="pre">scaling_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scaler</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/preprocess.html#PreProcessData.scaling_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.PreProcessData.scaling_data" title="Permalink to this definition"></a></dt>
+<dd><p>Scales the features with the desired scaler.</p>
+<p>The features may have very different scales of measurements. In such
+case, the features need to be scaled to have features in the similar
+scale.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regression_pipeline.PreProcessData.split_data">
+<span class="sig-name descname"><span class="pre">split_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Target_col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">requires_target_transformation</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_transformer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">requires_feature_transformation</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">features_transfromers_dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/preprocess.html#PreProcessData.split_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.PreProcessData.split_data" title="Permalink to this definition"></a></dt>
+<dd><p>Splits data and creates train and test data.</p>
+<p>This function uses the sklearn train_test_split method to create train
+and test data. Also, transforms the data as per requirement with the
+appropriate math function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>Target_col: string</strong></dt><dd><p>The name of the target in the dataf.</p>
+</dd>
+<dt><strong>requires_target_transformation: string (either “True” or “False”)</strong></dt><dd><p>Indicates whether requires math transformation of the target
+values.</p>
+</dd>
+<dt><strong>target_transformer: string</strong></dt><dd><p>Indicates the type of transformation requires. The available
+transformer keywords are:
+(logtransform, squaretransform, squareroottransform,
+reciprocaltransform, boxcoxtransform,
+yeojohnsontransform, quantiletransform)</p>
+</dd>
+<dt><strong>requires_feature_transformation: string (either “True” or “False”)</strong></dt><dd><p>Indicates whether requires any math transformation of any features
+in the data.</p>
+</dd>
+<dt><strong>features_transfromers_dict: a dictionary</strong></dt><dd><p>A dictionary of maping the feature name and the corresponding
+required transformation (i.e. {“feat1”: “logtransform”, “feat2”:
+“squaretransform”})</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="regression_pipeline.Utilities">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">regression_pipeline.</span></span><span class="sig-name descname"><span class="pre">Utilities</span></span><a class="reference internal" href="_modules/regression_pipeline/utils.html#Utilities"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.Utilities" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Performs various utility tasks required during ML model selection run</p>
+<p class="rubric">Methods</p>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><strong>extract_raw_feature_names():</strong></p></td>
+<td><p>Extracts the original feature names from the subscripted feature names</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>filter_features():</strong></p></td>
+<td><p>Filters out the unwanted features from the given training or test dataset.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>calculate_VIF():</strong></p></td>
+<td><p>Calculates variance inflation factor for the features in the dataset</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="regression_pipeline.Utilities.calculate_VIF">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">calculate_VIF</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/utils.html#Utilities.calculate_VIF"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.Utilities.calculate_VIF" title="Permalink to this definition"></a></dt>
+<dd><p>Calculates the variance inflation factor (VIF) of the features</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>X: numpy array of shape (n_samples, n_features)</strong></dt><dd><p>The numeric features of the training set</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>vif_data: A pandas dataframe</dt><dd><p>vif values of each of the features in the training set</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regression_pipeline.Utilities.extract_raw_feature_names">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">extract_raw_feature_names</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">feature_subset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feature_names_map</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/utils.html#Utilities.extract_raw_feature_names"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.Utilities.extract_raw_feature_names" title="Permalink to this definition"></a></dt>
+<dd><p>Extracts the original feature names in the raw data for the selected feature subsets</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>feature_subset: an array</strong></dt><dd><p>Selected feature names in the x0,x1,x2…..form</p>
+</dd>
+<dt><strong>feature_names_map: A dictionary</strong></dt><dd><p>The original feature names mapped to subscripted feature names</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>feature_names_raw: A list</dt><dd><p>Orginal feature names corresponding to the subscripted features in the feature_susbet</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regression_pipeline.Utilities.filter_features">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">filter_features</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feature_subset</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/utils.html#Utilities.filter_features"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.Utilities.filter_features" title="Permalink to this definition"></a></dt>
+<dd><p>Filters out the less important features from the data</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>X: numpy array of shape (n_samples, n_features)</strong></dt><dd><p>Training/test data</p>
+</dd>
+<dt><strong>subset_features: an array</strong></dt><dd><p>Selected relevant feature names</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>X_filtered: numpy array of shape (n_samples, n_features - k)</dt><dd><p>Filtered datasets set</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="regression_pipeline.VisualizationData">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">regression_pipeline.</span></span><span class="sig-name descname"><span class="pre">VisualizationData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">results</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/vizualization.html#VisualizationData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.VisualizationData" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Creates various vizualization plots.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>results</strong><span class="classifier">a pandas dataframe</span></dt><dd><p>A dataframe of all the accumulated performance metrics of all the
+models tried.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><strong>plot_train_test_scores():</strong></p></td>
+<td><p>Plots the train and test scores for the whole data set.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>plot_cv_train_test_scores():</strong></p></td>
+<td><p>Plots the cross-validated train and test scores of the models.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>plot_pvalues():</strong></p></td>
+<td><p>Plots the p-values of the ttest performed on the cross-validated scores.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="regression_pipeline.VisualizationData.plot_confidence_intervals">
+<span class="sig-name descname"><span class="pre">plot_confidence_intervals</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/vizualization.html#VisualizationData.plot_confidence_intervals"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.VisualizationData.plot_confidence_intervals" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regression_pipeline.VisualizationData.plot_cv_train_test_scores">
+<span class="sig-name descname"><span class="pre">plot_cv_train_test_scores</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/vizualization.html#VisualizationData.plot_cv_train_test_scores"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.VisualizationData.plot_cv_train_test_scores" title="Permalink to this definition"></a></dt>
+<dd><p>Plots cross-validated train test scores.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regression_pipeline.VisualizationData.plot_pvalues">
+<span class="sig-name descname"><span class="pre">plot_pvalues</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/vizualization.html#VisualizationData.plot_pvalues"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.VisualizationData.plot_pvalues" title="Permalink to this definition"></a></dt>
+<dd><p>Plots p-values of ttest performed on the cross-validated scores</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regression_pipeline.VisualizationData.plot_train_test_scores">
+<span class="sig-name descname"><span class="pre">plot_train_test_scores</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/vizualization.html#VisualizationData.plot_train_test_scores"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.VisualizationData.plot_train_test_scores" title="Permalink to this definition"></a></dt>
+<dd><p>Plots train test scores on the whole dataset.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="regression_pipeline.engineer_feature">
+<span class="sig-prename descclassname"><span class="pre">regression_pipeline.</span></span><span class="sig-name descname"><span class="pre">engineer_feature</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/feature_eng.html#engineer_feature"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.engineer_feature" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="modules.html" class="btn btn-neutral float-left" title="regression_pipeline" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Bhaskar Borah.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,39 @@
+name_of_study: car-price-prediction
+obj_direction: maximize
+scoring_obejctive: neg_mean_squared_error
+ntrials: 100
+models_to_try:
+- random-forest
+- gradient-boosting
+random_forest_params:
+- - n_estimators
+  - dtype: int
+    max_val: 200
+    min_val: 20
+    step_size: 10
+- - criterion
+  - dtype: categorical
+    vals:
+    - squared_error
+    - friedman_mse
+- - max_depth
+  - dtype: int
+    max_val: 200
+    min_val: 50
+    step_size: 10
+gradient_boost_params:
+- - n_estimators
+  - dtype: int
+    max_val: 200
+    min_val: 20
+    step_size: 10
+- - criterion
+  - dtype: categorical
+    vals:
+    - squared_error
+    - friedman_mse
+- - max_depth
+  - dtype: int
+    max_val: 200
+    min_val: 50
+    step_size: 10

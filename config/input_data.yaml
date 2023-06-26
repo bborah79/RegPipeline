@@ -1,0 +1,97 @@
+cw_path: /home/bhaskar/Work/ML_projects_learning/practice_data/Predictive_modeling/regression_pipeline/data/
+data_file_name: car_details_v4.csv
+cv: 10
+random_state: 1234
+njobs: -1
+p_val: 0.05
+tolerance: 0.001
+variance_thershold: 0.0
+step_rfe: 1
+regression:
+  regression_flag: 'True'
+  models:
+    rf: RandomForestRegressor()
+    linreg: LinearRegression()
+    svr: SVR(kernel='linear')
+  scoring:
+  - r2
+  - neg_mean_squared_error
+  score_funcs:
+  - r2_score
+  - mean_squared_error
+original_col_heads:
+- Make
+- Model
+- Price
+- Year
+- Kilometer
+- Fuel_type
+- Transmission
+- Location
+- Color
+- Owner
+- Seller_type
+- Engine
+- Max_power
+- Max_torque
+- Drivetrain
+- Length
+- Width
+- Height
+- Seating_capacity
+- Fuel_tank_capacity
+target_feature: Price
+requires_target_transformation: 'True'
+target_transformer: logtransform
+requires_feature_transformation: 'False'
+features_transfromers_dict: null
+data_contains_nullval: 'True'
+null_fill_procedure: mode
+requires_feature_engineering: 'True'
+requires_feature_selection: 'True'
+requires_hyperparam_opt: 'False'
+requires_feature_encoding: 'True'
+requires_feature_scaling: 'True'
+scaler: MinMaxScaler()
+encoding_requires:
+- catboost_encoding
+- ordinal_encoding
+features_to_encode:
+  catboost_encoding:
+  - Model
+  - Make
+  - Location
+  - Color
+  - Seller_type
+  - Fuel_type
+  ordinal_encoding:
+  - Owner
+  - Seating_capacity
+  - Transmission
+  - Drivetrain
+ordinal_encode_map:
+- col: Owner
+  mapping:
+    UnRegistered Car: 0
+    First: 1
+    Second: 2
+    Third: 3
+    Fourth: 4
+    4 or More: 5
+- col: Seating_capacity
+  mapping:
+    '2.0': 0
+    '4.0': 1
+    '5.0': 2
+    '6.0': 3
+    '7.0': 4
+    '8.0': 5
+- col: Drivetrain
+  mapping:
+    FWD: 0
+    RWD: 1
+    AWD: 2
+- col: Transmission
+  mapping:
+    Manual: 0
+    Automatic: 1
