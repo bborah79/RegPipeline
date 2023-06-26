@@ -39,9 +39,15 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../modules.html">regression_pipeline</a></li>
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../preprocess.html">Preprocess</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../feature_select.html">Feature Selection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../feature_eng.html">Feature Engineering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../evalmodels.html">Evaluate Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../hyperparam_opt.html">Hyperparameter optimization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../utils.html">Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../math_transformers.html">Mathematical Feature Transformation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../vizualization.html">Visualization</a></li>
 </ul>
 
         </div>
@@ -82,7 +88,7 @@
 <span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">Utilities</span>
 
 
-<div class="viewcode-block" id="OptunaOpt"><a class="viewcode-back" href="../../regression_pipeline.html#regression_pipeline.hyperparam_opt.OptunaOpt">[docs]</a><span class="k">class</span> <span class="nc">OptunaOpt</span><span class="p">:</span>
+<div class="viewcode-block" id="OptunaOpt"><a class="viewcode-back" href="../../hyperparam_opt.html#regression_pipeline.hyperparam_opt.OptunaOpt">[docs]</a><span class="k">class</span> <span class="nc">OptunaOpt</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Optimization of hyperparameters with optuna</span>
 
 <span class="sd">    Parameters</span>
@@ -124,7 +130,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">scoring</span> <span class="o">=</span> <span class="n">scoring</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">score_funcs</span> <span class="o">=</span> <span class="n">score_funcs</span>
 
-<div class="viewcode-block" id="OptunaOpt.set_model_params"><a class="viewcode-back" href="../../regression_pipeline.html#regression_pipeline.hyperparam_opt.OptunaOpt.set_model_params">[docs]</a>    <span class="k">def</span> <span class="nf">set_model_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trial</span><span class="p">,</span> <span class="n">params_names</span><span class="p">,</span> <span class="n">params_dic</span><span class="p">):</span>
+<div class="viewcode-block" id="OptunaOpt.set_model_params"><a class="viewcode-back" href="../../hyperparam_opt.html#regression_pipeline.hyperparam_opt.OptunaOpt.set_model_params">[docs]</a>    <span class="k">def</span> <span class="nf">set_model_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trial</span><span class="p">,</span> <span class="n">params_names</span><span class="p">,</span> <span class="n">params_dic</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Sets the necessary hyperparameter values as per optuna</span>
 
 <span class="sd">        Parameters</span>
@@ -165,7 +171,7 @@
 
         <span class="k">return</span> <span class="n">params</span></div>
 
-<div class="viewcode-block" id="OptunaOpt.parse_hyperparams_inp"><a class="viewcode-back" href="../../regression_pipeline.html#regression_pipeline.hyperparam_opt.OptunaOpt.parse_hyperparams_inp">[docs]</a>    <span class="k">def</span> <span class="nf">parse_hyperparams_inp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config_file</span><span class="p">):</span>
+<div class="viewcode-block" id="OptunaOpt.parse_hyperparams_inp"><a class="viewcode-back" href="../../hyperparam_opt.html#regression_pipeline.hyperparam_opt.OptunaOpt.parse_hyperparams_inp">[docs]</a>    <span class="k">def</span> <span class="nf">parse_hyperparams_inp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config_file</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Parses the hyperparameter optimization config file</span>
 
 <span class="sd">        Parameters</span>
@@ -195,7 +201,7 @@
             <span class="k">if</span> <span class="n">modeltype</span> <span class="o">==</span> <span class="s2">&quot;gradient-boosting&quot;</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">gradient_boost_params</span> <span class="o">=</span> <span class="n">params_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;gradient_boost_params&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="OptunaOpt.create_model"><a class="viewcode-back" href="../../regression_pipeline.html#regression_pipeline.hyperparam_opt.OptunaOpt.create_model">[docs]</a>    <span class="k">def</span> <span class="nf">create_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trial</span><span class="p">):</span>
+<div class="viewcode-block" id="OptunaOpt.create_model"><a class="viewcode-back" href="../../hyperparam_opt.html#regression_pipeline.hyperparam_opt.OptunaOpt.create_model">[docs]</a>    <span class="k">def</span> <span class="nf">create_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trial</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Creates a trail model with a subset of the parameters</span>
 
 <span class="sd">        Parameters</span>
@@ -237,7 +243,7 @@
 
         <span class="k">return</span> <span class="n">model</span></div>
 
-<div class="viewcode-block" id="OptunaOpt.objective"><a class="viewcode-back" href="../../regression_pipeline.html#regression_pipeline.hyperparam_opt.OptunaOpt.objective">[docs]</a>    <span class="k">def</span> <span class="nf">objective</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trial</span><span class="p">,</span> <span class="n">xtrain</span><span class="p">,</span> <span class="n">ytrain</span><span class="p">):</span>
+<div class="viewcode-block" id="OptunaOpt.objective"><a class="viewcode-back" href="../../hyperparam_opt.html#regression_pipeline.hyperparam_opt.OptunaOpt.objective">[docs]</a>    <span class="k">def</span> <span class="nf">objective</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trial</span><span class="p">,</span> <span class="n">xtrain</span><span class="p">,</span> <span class="n">ytrain</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Defines the objective function to be optimized</span>
 
 <span class="sd">        Parameters</span>
@@ -276,7 +282,7 @@
 
         <span class="k">return</span> <span class="n">add_score</span></div>
 
-<div class="viewcode-block" id="OptunaOpt.run_optuna"><a class="viewcode-back" href="../../regression_pipeline.html#regression_pipeline.hyperparam_opt.OptunaOpt.run_optuna">[docs]</a>    <span class="k">def</span> <span class="nf">run_optuna</span><span class="p">(</span>
+<div class="viewcode-block" id="OptunaOpt.run_optuna"><a class="viewcode-back" href="../../hyperparam_opt.html#regression_pipeline.hyperparam_opt.OptunaOpt.run_optuna">[docs]</a>    <span class="k">def</span> <span class="nf">run_optuna</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">optuna_config_file</span><span class="p">,</span> <span class="n">xtrain</span><span class="p">,</span> <span class="n">xtest</span><span class="p">,</span> <span class="n">ytrain</span><span class="p">,</span> <span class="n">ytest</span><span class="p">,</span> <span class="n">all_selected_features</span>
     <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Runs the optimization process</span>

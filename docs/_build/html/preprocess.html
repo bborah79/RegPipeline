@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Preprocess &mdash; Regression pipeline 0.00, 2023 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Feature Selection" href="feature_select.html" />
+    <link rel="prev" title="Welcome to Regression pipeline’s documentation!" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Regression pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Preprocess</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#regression_pipeline.preprocess.PreProcessData"><code class="docutils literal notranslate"><span class="pre">PreProcessData</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#regression_pipeline.preprocess.PreProcessData.encode_categorical_features"><code class="docutils literal notranslate"><span class="pre">PreProcessData.encode_categorical_features()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#regression_pipeline.preprocess.PreProcessData.fill_na"><code class="docutils literal notranslate"><span class="pre">PreProcessData.fill_na()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#regression_pipeline.preprocess.PreProcessData.scaling_data"><code class="docutils literal notranslate"><span class="pre">PreProcessData.scaling_data()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#regression_pipeline.preprocess.PreProcessData.split_data"><code class="docutils literal notranslate"><span class="pre">PreProcessData.split_data()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="feature_select.html">Feature Selection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="feature_eng.html">Feature Engineering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="evalmodels.html">Evaluate Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hyperparam_opt.html">Hyperparameter optimization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utils.html">Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="math_transformers.html">Mathematical Feature Transformation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vizualization.html">Visualization</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Regression pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Preprocess</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/preprocess.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="preprocess">
+<h1>Preprocess<a class="headerlink" href="#preprocess" title="Permalink to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="regression_pipeline.preprocess.PreProcessData">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">regression_pipeline.preprocess.</span></span><span class="sig-name descname"><span class="pre">PreProcessData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/preprocess.html#PreProcessData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.preprocess.PreProcessData" title="Permalink to this definition"></a></dt>
+<dd><p>Pre-processes the raw data.</p>
+<p>The raw data is processed with different methods to make it ready for the
+algorithm to run on.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>df: a pandas dataframe</strong></dt><dd><p>The raw data in a pandas dataframe.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Attributes<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>X_train_: a pandas dataframe (n_samples, n_features)</strong></dt><dd><p>Train data</p>
+</dd>
+<dt><strong>X_test_: an pandas dataframe (k_samples, n_features)</strong></dt><dd><p>Test data</p>
+</dd>
+<dt><strong>y_train_: a pandas series (n_samples,)</strong></dt><dd><p>Train target values</p>
+</dd>
+<dt><strong>y_test_: a pandas series (k_samples, )</strong></dt><dd><p>Test target values</p>
+</dd>
+<dt><strong>X_train_scl_: an array of shape (n_samples, n_features)</strong></dt><dd><p>Scaled training data</p>
+</dd>
+<dt><strong>X_test_scl_: an array of shape (k_samples, n_features)</strong></dt><dd><p>Scaled test data</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><strong>fill_na():</strong></p></td>
+<td><p>Fills the null values in the data with appropriate values.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>split_data():</strong></p></td>
+<td><p>Splits the data and create a training and a test datasets.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>encode_categorical_features():</strong></p></td>
+<td><p>Encodes the categorical features with appropriate algorithm.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>scaling_data():</strong></p></td>
+<td><p>Scales the data in order to have all features in same scale.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="regression_pipeline.preprocess.PreProcessData.encode_categorical_features">
+<span class="sig-name descname"><span class="pre">encode_categorical_features</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">encoders</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">features_to_encode</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ordinal_encode_map</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/preprocess.html#PreProcessData.encode_categorical_features"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.preprocess.PreProcessData.encode_categorical_features" title="Permalink to this definition"></a></dt>
+<dd><p>Encodes the categorical features with the desired encoder.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>encoders: a list of strings</strong></dt><dd><p>The desired encoder key-words to encode the features.</p>
+</dd>
+<dt><strong>features_to_encode: a dict</strong></dt><dd><p>A dictionary with keys being the encoder key-word and the values
+being the list of features to be encoded.</p>
+</dd>
+<dt><strong>ordinal_encode_map: a list of dictionaries</strong></dt><dd><p>A list of dictionaries defining the required maps for ordinal
+encoding and the feature names to be encoded.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regression_pipeline.preprocess.PreProcessData.fill_na">
+<span class="sig-name descname"><span class="pre">fill_na</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fill_val_def</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/preprocess.html#PreProcessData.fill_na"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.preprocess.PreProcessData.fill_na" title="Permalink to this definition"></a></dt>
+<dd><p>Fills the missing values (NAs) or the null values.</p>
+<p>The null values in the data need to be treated appropriately so that we
+do not loose on the critical information. This function allows one to
+fill in those null values with the mean, median or the mode of the
+feature. The way of filling in the null vallues depends upon the
+problem and other situations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>fill_val_def: str</strong></dt><dd><p>String(i.e. mean, median, or mode) to define the way to fill the NA
+values.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regression_pipeline.preprocess.PreProcessData.scaling_data">
+<span class="sig-name descname"><span class="pre">scaling_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scaler</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/preprocess.html#PreProcessData.scaling_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.preprocess.PreProcessData.scaling_data" title="Permalink to this definition"></a></dt>
+<dd><p>Scales the features with the desired scaler.</p>
+<p>The features may have very different scales of measurements. In such
+case, the features need to be scaled to have features in the similar
+scale.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regression_pipeline.preprocess.PreProcessData.split_data">
+<span class="sig-name descname"><span class="pre">split_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Target_col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">requires_target_transformation</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_transformer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">requires_feature_transformation</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">features_transfromers_dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/preprocess.html#PreProcessData.split_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.preprocess.PreProcessData.split_data" title="Permalink to this definition"></a></dt>
+<dd><p>Splits data and creates train and test data.</p>
+<p>This function uses the sklearn train_test_split method to create train
+and test data. Also, transforms the data as per requirement with the
+appropriate math function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>Target_col: string</strong></dt><dd><p>The name of the target in the dataf.</p>
+</dd>
+<dt><strong>requires_target_transformation: string (either “True” or “False”)</strong></dt><dd><p>Indicates whether requires math transformation of the target
+values.</p>
+</dd>
+<dt><strong>target_transformer: string</strong></dt><dd><p>Indicates the type of transformation requires. The available
+transformer keywords are:
+(logtransform, squaretransform, squareroottransform,
+reciprocaltransform, boxcoxtransform,
+yeojohnsontransform, quantiletransform)</p>
+</dd>
+<dt><strong>requires_feature_transformation: string (either “True” or “False”)</strong></dt><dd><p>Indicates whether requires any math transformation of any features
+in the data.</p>
+</dd>
+<dt><strong>features_transfromers_dict: a dictionary</strong></dt><dd><p>A dictionary of maping the feature name and the corresponding
+required transformation (i.e. {“feat1”: “logtransform”, “feat2”:
+“squaretransform”})</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to Regression pipeline’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="feature_select.html" class="btn btn-neutral float-right" title="Feature Selection" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Bhaskar Borah.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

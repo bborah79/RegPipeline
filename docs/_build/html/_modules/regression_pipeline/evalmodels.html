@@ -39,9 +39,15 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../modules.html">regression_pipeline</a></li>
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../preprocess.html">Preprocess</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../feature_select.html">Feature Selection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../feature_eng.html">Feature Engineering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../evalmodels.html">Evaluate Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../hyperparam_opt.html">Hyperparameter optimization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../utils.html">Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../math_transformers.html">Mathematical Feature Transformation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../vizualization.html">Visualization</a></li>
 </ul>
 
         </div>
@@ -81,7 +87,7 @@
 <span class="c1"># import shap</span>
 
 
-<div class="viewcode-block" id="ModelSelection"><a class="viewcode-back" href="../../regression_pipeline.html#regression_pipeline.evalmodels.ModelSelection">[docs]</a><span class="k">class</span> <span class="nc">ModelSelection</span><span class="p">:</span>
+<div class="viewcode-block" id="ModelSelection"><a class="viewcode-back" href="../../evalmodels.html#regression_pipeline.evalmodels.ModelSelection">[docs]</a><span class="k">class</span> <span class="nc">ModelSelection</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Performs model selection using various feature sets and models.</span>
 
 <span class="sd">    This class implements methods in order to figure out the best performing</span>
@@ -127,7 +133,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">njobs</span> <span class="o">=</span> <span class="n">njobs</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">score_funcs</span> <span class="o">=</span> <span class="n">score_funcs</span>
 
-<div class="viewcode-block" id="ModelSelection.evaluate_model_performance"><a class="viewcode-back" href="../../regression_pipeline.html#regression_pipeline.evalmodels.ModelSelection.evaluate_model_performance">[docs]</a>    <span class="k">def</span> <span class="nf">evaluate_model_performance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">xtrain</span><span class="p">,</span> <span class="n">xtest</span><span class="p">,</span> <span class="n">ytrain</span><span class="p">,</span> <span class="n">ytest</span><span class="p">):</span>
+<div class="viewcode-block" id="ModelSelection.evaluate_model_performance"><a class="viewcode-back" href="../../evalmodels.html#regression_pipeline.evalmodels.ModelSelection.evaluate_model_performance">[docs]</a>    <span class="k">def</span> <span class="nf">evaluate_model_performance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">xtrain</span><span class="p">,</span> <span class="n">xtest</span><span class="p">,</span> <span class="n">ytrain</span><span class="p">,</span> <span class="n">ytest</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Evaluates performance of a model on the training and test data.</span>
 
 <span class="sd">        The model performance is evaluated in terms of the appropriate metric</span>
@@ -261,7 +267,7 @@
 
         <span class="k">return</span> <span class="n">mean_results_df</span><span class="p">,</span> <span class="n">ci_train</span><span class="p">,</span> <span class="n">ci_test</span></div>
 
-<div class="viewcode-block" id="ModelSelection.run_model_selection"><a class="viewcode-back" href="../../regression_pipeline.html#regression_pipeline.evalmodels.ModelSelection.run_model_selection">[docs]</a>    <span class="k">def</span> <span class="nf">run_model_selection</span><span class="p">(</span>
+<div class="viewcode-block" id="ModelSelection.run_model_selection"><a class="viewcode-back" href="../../evalmodels.html#regression_pipeline.evalmodels.ModelSelection.run_model_selection">[docs]</a>    <span class="k">def</span> <span class="nf">run_model_selection</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">models</span><span class="p">,</span> <span class="n">xtrain</span><span class="p">,</span> <span class="n">xtest</span><span class="p">,</span> <span class="n">ytrain</span><span class="p">,</span> <span class="n">ytest</span><span class="p">,</span> <span class="n">feature_names_map</span>
     <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Runs model selection process.</span>

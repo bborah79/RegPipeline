@@ -39,9 +39,15 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../modules.html">regression_pipeline</a></li>
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../preprocess.html">Preprocess</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../feature_select.html">Feature Selection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../feature_eng.html">Feature Engineering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../evalmodels.html">Evaluate Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../hyperparam_opt.html">Hyperparameter optimization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../utils.html">Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../math_transformers.html">Mathematical Feature Transformation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../vizualization.html">Visualization</a></li>
 </ul>
 
         </div>
@@ -74,7 +80,7 @@
 <span class="kn">from</span> <span class="nn">statsmodels.stats.outliers_influence</span> <span class="kn">import</span> <span class="n">variance_inflation_factor</span>
 
 
-<div class="viewcode-block" id="Utilities"><a class="viewcode-back" href="../../regression_pipeline.html#regression_pipeline.utils.Utilities">[docs]</a><span class="k">class</span> <span class="nc">Utilities</span><span class="p">:</span>
+<div class="viewcode-block" id="Utilities"><a class="viewcode-back" href="../../utils.html#regression_pipeline.utils.Utilities">[docs]</a><span class="k">class</span> <span class="nc">Utilities</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Performs various utility tasks required during ML model selection run</span>
 
 <span class="sd">    Methods</span>
@@ -88,7 +94,7 @@
 <span class="sd">        Calculates variance inflation factor for the features in the dataset</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="Utilities.extract_raw_feature_names"><a class="viewcode-back" href="../../regression_pipeline.html#regression_pipeline.utils.Utilities.extract_raw_feature_names">[docs]</a>    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="Utilities.extract_raw_feature_names"><a class="viewcode-back" href="../../utils.html#regression_pipeline.utils.Utilities.extract_raw_feature_names">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">extract_raw_feature_names</span><span class="p">(</span><span class="n">feature_subset</span><span class="p">,</span> <span class="n">feature_names_map</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Extracts the original feature names in the raw data for the selected feature subsets</span>
 
@@ -110,7 +116,7 @@
 
         <span class="k">return</span> <span class="n">feature_names_raw</span></div>
 
-<div class="viewcode-block" id="Utilities.filter_features"><a class="viewcode-back" href="../../regression_pipeline.html#regression_pipeline.utils.Utilities.filter_features">[docs]</a>    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="Utilities.filter_features"><a class="viewcode-back" href="../../utils.html#regression_pipeline.utils.Utilities.filter_features">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">filter_features</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">feature_subset</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Filters out the less important features from the data</span>
 
@@ -134,7 +140,7 @@
 
         <span class="k">return</span> <span class="n">X_filtered</span></div>
 
-<div class="viewcode-block" id="Utilities.calculate_VIF"><a class="viewcode-back" href="../../regression_pipeline.html#regression_pipeline.utils.Utilities.calculate_VIF">[docs]</a>    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="Utilities.calculate_VIF"><a class="viewcode-back" href="../../utils.html#regression_pipeline.utils.Utilities.calculate_VIF">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">calculate_VIF</span><span class="p">(</span><span class="n">X</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Calculates the variance inflation factor (VIF) of the features</span>
 

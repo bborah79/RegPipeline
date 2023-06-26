@@ -39,9 +39,15 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../modules.html">regression_pipeline</a></li>
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../preprocess.html">Preprocess</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../feature_select.html">Feature Selection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../feature_eng.html">Feature Engineering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../evalmodels.html">Evaluate Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../hyperparam_opt.html">Hyperparameter optimization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../utils.html">Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../math_transformers.html">Mathematical Feature Transformation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../vizualization.html">Visualization</a></li>
 </ul>
 
         </div>
@@ -74,7 +80,7 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 
-<div class="viewcode-block" id="VisualizationData"><a class="viewcode-back" href="../../regression_pipeline.html#regression_pipeline.vizualization.VisualizationData">[docs]</a><span class="k">class</span> <span class="nc">VisualizationData</span><span class="p">:</span>
+<div class="viewcode-block" id="VisualizationData"><a class="viewcode-back" href="../../vizualization.html#regression_pipeline.vizualization.VisualizationData">[docs]</a><span class="k">class</span> <span class="nc">VisualizationData</span><span class="p">:</span>
     <span class="sd">&#39;&#39;&#39;Creates various vizualization plots.</span>
 
 <span class="sd">    Parameters</span>
@@ -100,7 +106,7 @@
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span> <span class="o">=</span> <span class="n">results</span>
 
-<div class="viewcode-block" id="VisualizationData.plot_train_test_scores"><a class="viewcode-back" href="../../regression_pipeline.html#regression_pipeline.vizualization.VisualizationData.plot_train_test_scores">[docs]</a>    <span class="k">def</span> <span class="nf">plot_train_test_scores</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="VisualizationData.plot_train_test_scores"><a class="viewcode-back" href="../../vizualization.html#regression_pipeline.vizualization.VisualizationData.plot_train_test_scores">[docs]</a>    <span class="k">def</span> <span class="nf">plot_train_test_scores</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Plots train test scores on the whole dataset.</span>
 
 <span class="sd">        &#39;&#39;&#39;</span>
@@ -116,7 +122,7 @@
 
         <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">&quot;./output/train_test_scores_fulldata.png&quot;</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s2">&quot;tight&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="VisualizationData.plot_cv_train_test_scores"><a class="viewcode-back" href="../../regression_pipeline.html#regression_pipeline.vizualization.VisualizationData.plot_cv_train_test_scores">[docs]</a>    <span class="k">def</span> <span class="nf">plot_cv_train_test_scores</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="VisualizationData.plot_cv_train_test_scores"><a class="viewcode-back" href="../../vizualization.html#regression_pipeline.vizualization.VisualizationData.plot_cv_train_test_scores">[docs]</a>    <span class="k">def</span> <span class="nf">plot_cv_train_test_scores</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Plots cross-validated train test scores.</span>
 
 <span class="sd">        &#39;&#39;&#39;</span>
@@ -135,7 +141,7 @@
 
         <span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">&quot;./output/cv_train_test_scores.png&quot;</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s2">&quot;tight&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="VisualizationData.plot_pvalues"><a class="viewcode-back" href="../../regression_pipeline.html#regression_pipeline.vizualization.VisualizationData.plot_pvalues">[docs]</a>    <span class="k">def</span> <span class="nf">plot_pvalues</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="VisualizationData.plot_pvalues"><a class="viewcode-back" href="../../vizualization.html#regression_pipeline.vizualization.VisualizationData.plot_pvalues">[docs]</a>    <span class="k">def</span> <span class="nf">plot_pvalues</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Plots p-values of ttest performed on the cross-validated scores</span>
 
 <span class="sd">        &#39;&#39;&#39;</span>
@@ -148,7 +154,7 @@
         <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Models&quot;</span><span class="p">)</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">&quot;./output/cv_pval.png&quot;</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s2">&quot;tight&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="VisualizationData.plot_confidence_intervals"><a class="viewcode-back" href="../../regression_pipeline.html#regression_pipeline.vizualization.VisualizationData.plot_confidence_intervals">[docs]</a>    <span class="k">def</span> <span class="nf">plot_confidence_intervals</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">plot_confidence_intervals</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">xci_train_plot</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])))</span>
         <span class="n">xci_test_plot</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])))</span>
         <span class="n">xci_train_plot</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">val</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="mi">2</span><span class="p">]]))</span>
@@ -179,7 +185,7 @@
         <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Model id&quot;</span><span class="p">)</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Confidence interval of the predicted mean of each model&quot;</span><span class="p">)</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">show</span></div></div>
+        <span class="n">plt</span><span class="o">.</span><span class="n">show</span></div>
 </pre></div>
 
            </div>

@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Feature Selection &mdash; Regression pipeline 0.00, 2023 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Feature Engineering" href="feature_eng.html" />
+    <link rel="prev" title="Preprocess" href="preprocess.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Regression pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="preprocess.html">Preprocess</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Feature Selection</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#regression_pipeline.feature_select.FeatureSelect"><code class="docutils literal notranslate"><span class="pre">FeatureSelect</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#regression_pipeline.feature_select.FeatureSelect.create_feature_names_sub"><code class="docutils literal notranslate"><span class="pre">FeatureSelect.create_feature_names_sub()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#regression_pipeline.feature_select.FeatureSelect.filter_low_variance_features"><code class="docutils literal notranslate"><span class="pre">FeatureSelect.filter_low_variance_features()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#regression_pipeline.feature_select.FeatureSelect.map_orig_feature_names"><code class="docutils literal notranslate"><span class="pre">FeatureSelect.map_orig_feature_names()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#regression_pipeline.feature_select.FeatureSelect.select_borutapy"><code class="docutils literal notranslate"><span class="pre">FeatureSelect.select_borutapy()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#regression_pipeline.feature_select.FeatureSelect.select_feature_low_vif"><code class="docutils literal notranslate"><span class="pre">FeatureSelect.select_feature_low_vif()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#regression_pipeline.feature_select.FeatureSelect.select_features_vote"><code class="docutils literal notranslate"><span class="pre">FeatureSelect.select_features_vote()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#regression_pipeline.feature_select.FeatureSelect.select_fregression"><code class="docutils literal notranslate"><span class="pre">FeatureSelect.select_fregression()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#regression_pipeline.feature_select.FeatureSelect.select_recursive_feature_elimination"><code class="docutils literal notranslate"><span class="pre">FeatureSelect.select_recursive_feature_elimination()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#regression_pipeline.feature_select.FeatureSelect.select_sequential_feature_selector"><code class="docutils literal notranslate"><span class="pre">FeatureSelect.select_sequential_feature_selector()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#regression_pipeline.feature_select.FeatureSelect.update_org_feature_names_map"><code class="docutils literal notranslate"><span class="pre">FeatureSelect.update_org_feature_names_map()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="feature_eng.html">Feature Engineering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="evalmodels.html">Evaluate Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hyperparam_opt.html">Hyperparameter optimization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utils.html">Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="math_transformers.html">Mathematical Feature Transformation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vizualization.html">Visualization</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Regression pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Feature Selection</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/feature_select.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="feature-selection">
+<h1>Feature Selection<a class="headerlink" href="#feature-selection" title="Permalink to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="regression_pipeline.feature_select.FeatureSelect">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">regression_pipeline.feature_select.</span></span><span class="sig-name descname"><span class="pre">FeatureSelect</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xtrain</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xtest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ytrain</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feature_names</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/feature_select.html#FeatureSelect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.feature_select.FeatureSelect" title="Permalink to this definition"></a></dt>
+<dd><p>Feature selection process</p>
+<p>Variety of feature selection methods are employed in order to obtain
+sets of important features.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>xtrain</strong><span class="classifier">numpy ndarray</span></dt><dd><p>Training data</p>
+</dd>
+<dt><strong>xtest</strong><span class="classifier">numpy ndarray</span></dt><dd><p>Test dataset</p>
+</dd>
+<dt><strong>ytrain</strong><span class="classifier">numpy ndarray</span></dt><dd><p>Training target</p>
+</dd>
+<dt><strong>feature_names</strong><span class="classifier">a list</span></dt><dd><p>A list of all the feature names.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Attributes<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>org_feature_names_sub_</strong><span class="classifier">an array of shape (n_features, )</span></dt><dd><p>An array of dummy feature names in the subscripted form like x0, x1,
+x2…xn.</p>
+</dd>
+<dt><strong>org_feature_names_map_</strong><span class="classifier">a dictionary</span></dt><dd><p>A dictionary that maps the dummy features to the original feature names
+of the problem at hand.</p>
+</dd>
+<dt><strong>updat_feature_names_sub_</strong><span class="classifier">an array of shape (k_features, )</span></dt><dd><p>An array of the updated dummy features when some features are dropped
+from the data.</p>
+</dd>
+<dt><strong>updat_feature_names_map_</strong><span class="classifier">a dictionary</span></dt><dd><p>A dictionary of the updated map of the dummy features to the original
+features.</p>
+</dd>
+<dt><strong>all_selected_features_</strong><span class="classifier">a list</span></dt><dd><p>A list of all the feature subsets selected by various methods.</p>
+</dd>
+<dt><strong>selected_features_</strong><span class="classifier">a list</span></dt><dd><p>A list of selected feature names selected by majority voting.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><strong>create_feature_names_sub():</strong></p></td>
+<td><p>Creates an array of feature names in the form x0, x1, x2,…..,xn.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>map_orig_feature_name():</strong></p></td>
+<td><p>Maps the orginal feature names with the feature names in the form x0,x1,…..xn.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>update_org_feature_names_map(number_dropped_features, dropped_features):</strong></p></td>
+<td><p>Updates feature names and the feature map.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>filter_low_variance_features():</strong></p></td>
+<td><p>Drops feature whose variance is low or zero.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>select_recursive_feature_elimination(model):</strong></p></td>
+<td><p>Selects features with recusrsive feature elimination method.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>select_borutapy(rf):</strong></p></td>
+<td><p>Selects features with BorutaPy algorithm.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>select_fregression():</strong></p></td>
+<td><p>Selects features with correlation significance with the target.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>select_sequential_feature_selector(model):</strong></p></td>
+<td><p>Selects feature with sequential feature selection method.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>select_feature_low_vif():</strong></p></td>
+<td><p>Selects feature with low variance inflation factor avoiding multicolinierity.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>select_features_vote(rf, model):</strong></p></td>
+<td><p>Selects features having majority selection by various methods.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="regression_pipeline.feature_select.FeatureSelect.create_feature_names_sub">
+<span class="sig-name descname"><span class="pre">create_feature_names_sub</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/feature_select.html#FeatureSelect.create_feature_names_sub"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.feature_select.FeatureSelect.create_feature_names_sub" title="Permalink to this definition"></a></dt>
+<dd><p>Creates an array of dummy feature names</p>
+<p>A set of feature names in the form of x0, x1, x2,….xn are created as
+these will be used while running the machine learning algorithms with
+the data in an array form of shape (n_samples, n_features).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regression_pipeline.feature_select.FeatureSelect.filter_low_variance_features">
+<span class="sig-name descname"><span class="pre">filter_low_variance_features</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">var_threshold</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/feature_select.html#FeatureSelect.filter_low_variance_features"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.feature_select.FeatureSelect.filter_low_variance_features" title="Permalink to this definition"></a></dt>
+<dd><p>Filters features that have low variance than the threshold</p>
+<p>Some features in the data may have zero variance or variance much lower
+than the pre-set threshold. Such features are carry not much
+information and hence need to be dropped from the data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>var_threshold: float</strong></dt><dd><p>Threshold for the variance for dropping a particular feature from
+the data.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regression_pipeline.feature_select.FeatureSelect.map_orig_feature_names">
+<span class="sig-name descname"><span class="pre">map_orig_feature_names</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/feature_select.html#FeatureSelect.map_orig_feature_names"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.feature_select.FeatureSelect.map_orig_feature_names" title="Permalink to this definition"></a></dt>
+<dd><p>Maps the dummy feature names to the original feature names.</p>
+<p>The original feature names are necessary in order to interpret the
+models. Therefor, this function maps the dummy features (x0, x1,
+x2,…xn) in to the corresponding original feature names of the problem
+of interest. A dictionary is created with the keys being the dummy
+features and the values being the original feature names.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regression_pipeline.feature_select.FeatureSelect.select_borutapy">
+<span class="sig-name descname"><span class="pre">select_borutapy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/feature_select.html#FeatureSelect.select_borutapy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.feature_select.FeatureSelect.select_borutapy" title="Permalink to this definition"></a></dt>
+<dd><p>Selects features employing BortaPy algorithm</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>rf: A random forest regression instance</strong></dt><dd></dd>
+<dt><strong>random_state: int</strong></dt><dd><p>Seed value to control the random number generator</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regression_pipeline.feature_select.FeatureSelect.select_feature_low_vif">
+<span class="sig-name descname"><span class="pre">select_feature_low_vif</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/feature_select.html#FeatureSelect.select_feature_low_vif"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.feature_select.FeatureSelect.select_feature_low_vif" title="Permalink to this definition"></a></dt>
+<dd><p>Selects features with low variance inflation factor (VIF)</p>
+<p>VIF is a key indicator of multicolinearity among the features. if VIF
+is higher, say closer to 10 or higher, then such features are highly
+correlated with other features and need to be dropped. Which features
+need to be dropped is based on the problem at hand and the feasibility
+of the data.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regression_pipeline.feature_select.FeatureSelect.select_features_vote">
+<span class="sig-name descname"><span class="pre">select_features_vote</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cv</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">njobs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tolerance</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">var_threshold</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pval</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step_rfe</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/feature_select.html#FeatureSelect.select_features_vote"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.feature_select.FeatureSelect.select_features_vote" title="Permalink to this definition"></a></dt>
+<dd><p>Selects features that are selected by majority of the methods as
+above</p>
+<p>Feature which are selected by majority of the methods implemented here
+are supposed to be important features. This function selects the
+features based on majority voting.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>rf: A random forest regression instance</strong></dt><dd></dd>
+<dt><strong>model: A model instance (i.e. LinearRegression, SVR, etc..)</strong></dt><dd></dd>
+<dt><strong>cv: int, cross-validation generator or an iterator</strong></dt><dd><p>if int, then defines the number of cross-validation folds</p>
+</dd>
+<dt><strong>njobs: int</strong></dt><dd><p>number of jobs to run in parallel</p>
+</dd>
+<dt><strong>tolerance: float</strong></dt><dd><p>If the score is not incremented by at least tol between
+two consecutive feature additions or removals, stop adding or
+removing. More explanation can be read from sklearn doc.</p>
+</dd>
+<dt><strong>var_threshold: float</strong></dt><dd><p>Threshold for the variance for dropping a particular feature from
+the data.</p>
+</dd>
+<dt><strong>pval: float</strong></dt><dd><p>p-value threshold in order to decide if the regression is
+significant or not.</p>
+</dd>
+<dt><strong>random_state: int</strong></dt><dd><p>Seed value to control the random number generator</p>
+</dd>
+<dt><strong>step_rfe: int or float</strong></dt><dd><p>Please see the sklearn doc for RFECV</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regression_pipeline.feature_select.FeatureSelect.select_fregression">
+<span class="sig-name descname"><span class="pre">select_fregression</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pval</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/feature_select.html#FeatureSelect.select_fregression"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.feature_select.FeatureSelect.select_fregression" title="Permalink to this definition"></a></dt>
+<dd><p>Selects features based on univariate linear regression tests</p>
+<p>The f_regression algorithm as implemented in sklearn is being used
+here. More can be read from the sklearn f_regression documentation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>pval: float</strong></dt><dd><p>p-value threshold in order to decide if the regression is
+significant or not.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regression_pipeline.feature_select.FeatureSelect.select_recursive_feature_elimination">
+<span class="sig-name descname"><span class="pre">select_recursive_feature_elimination</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cv</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step_rfe</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/feature_select.html#FeatureSelect.select_recursive_feature_elimination"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.feature_select.FeatureSelect.select_recursive_feature_elimination" title="Permalink to this definition"></a></dt>
+<dd><p>Selects features using recursive feature elimination method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>model: A model instance (i.e. LinearRegression, SVR, etc.)</strong></dt><dd></dd>
+<dt><strong>cv: int, cross-validation generator or an iterable</strong></dt><dd><p>if integer, then defines the number of cross-validation folds</p>
+</dd>
+<dt><strong>step_rfe: int or float</strong></dt><dd><p>Please see the sklearn doc for RFECV</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regression_pipeline.feature_select.FeatureSelect.select_sequential_feature_selector">
+<span class="sig-name descname"><span class="pre">select_sequential_feature_selector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cv</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tolerance</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">njobs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/feature_select.html#FeatureSelect.select_sequential_feature_selector"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.feature_select.FeatureSelect.select_sequential_feature_selector" title="Permalink to this definition"></a></dt>
+<dd><p>Selects features according to sequential feature selection method.</p>
+<p>The sequential feature selector implemented in sklearn is being used
+here. More of it can be read from the sklearn doocumentation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>model: A model instance (i.e. LinearRegression, SVR, etc.)</strong></dt><dd></dd>
+<dt><strong>cv: int, cross-validation generator or an iterator</strong></dt><dd><p>if int, then defines the number corss-validation folds.</p>
+</dd>
+<dt><strong>tolerance: float</strong></dt><dd><p>If the score is not incremented by at least tol between
+two consecutive feature additions or removals, stop adding or
+removing. More explanation can be read from sklearn doc.</p>
+</dd>
+<dt><strong>njobs: int</strong></dt><dd><p>Number of jobs to run in parallel.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regression_pipeline.feature_select.FeatureSelect.update_org_feature_names_map">
+<span class="sig-name descname"><span class="pre">update_org_feature_names_map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">number_dropped_features</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dropped_features</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/feature_select.html#FeatureSelect.update_org_feature_names_map"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.feature_select.FeatureSelect.update_org_feature_names_map" title="Permalink to this definition"></a></dt>
+<dd><p>Updates the feature names map in case some features are dropped.</p>
+<p>During the feature selection process some features may get dropped
+completely from the data due to their low variance or other reason. In
+such case, it is necessary to keep a track of the features dropped and
+update the feature name map for book keeping.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>number_dropped_features: int</strong></dt><dd><p>Number of features dropped.</p>
+</dd>
+<dt><strong>dropped_features: A list</strong></dt><dd><p>A list of the dropped feature names</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="preprocess.html" class="btn btn-neutral float-left" title="Preprocess" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="feature_eng.html" class="btn btn-neutral float-right" title="Feature Engineering" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Bhaskar Borah.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

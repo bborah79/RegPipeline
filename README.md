@@ -1,4 +1,4 @@
-Regressrion Pipeline
+Regression Pipeline
 ====================
 
 A regression pipeline that can run a model selection experiment with various

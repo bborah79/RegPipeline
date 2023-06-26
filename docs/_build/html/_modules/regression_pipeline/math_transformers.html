@@ -39,9 +39,15 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../modules.html">regression_pipeline</a></li>
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../preprocess.html">Preprocess</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../feature_select.html">Feature Selection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../feature_eng.html">Feature Engineering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../evalmodels.html">Evaluate Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../hyperparam_opt.html">Hyperparameter optimization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../utils.html">Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../math_transformers.html">Mathematical Feature Transformation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../vizualization.html">Visualization</a></li>
 </ul>
 
         </div>
@@ -75,7 +81,7 @@
 <span class="kn">from</span> <span class="nn">sklearn.preprocessing</span> <span class="kn">import</span> <span class="n">QuantileTransformer</span>
 
 
-<div class="viewcode-block" id="MathTransformations"><a class="viewcode-back" href="../../regression_pipeline.html#regression_pipeline.math_transformers.MathTransformations">[docs]</a><span class="k">class</span> <span class="nc">MathTransformations</span><span class="p">:</span>
+<div class="viewcode-block" id="MathTransformations"><a class="viewcode-back" href="../../math_transformers.html#regression_pipeline.math_transformers.MathTransformations">[docs]</a><span class="k">class</span> <span class="nc">MathTransformations</span><span class="p">:</span>
     <span class="sd">&#39;&#39;&#39;Performs various mathemtaical transformations of the features.</span>
 
 <span class="sd">    Methods</span>
@@ -103,7 +109,7 @@
 
 <span class="sd">    &#39;&#39;&#39;</span>
 
-<div class="viewcode-block" id="MathTransformations.logtransform"><a class="viewcode-back" href="../../regression_pipeline.html#regression_pipeline.math_transformers.MathTransformations.logtransform">[docs]</a>    <span class="k">def</span> <span class="nf">logtransform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+<div class="viewcode-block" id="MathTransformations.logtransform"><a class="viewcode-back" href="../../math_transformers.html#regression_pipeline.math_transformers.MathTransformations.logtransform">[docs]</a>    <span class="k">def</span> <span class="nf">logtransform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Performs a logarithmic (natural log) transformation.</span>
 
 <span class="sd">        Parameters</span>
@@ -116,7 +122,7 @@
 
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">X</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="MathTransformations.squaretransform"><a class="viewcode-back" href="../../regression_pipeline.html#regression_pipeline.math_transformers.MathTransformations.squaretransform">[docs]</a>    <span class="k">def</span> <span class="nf">squaretransform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+<div class="viewcode-block" id="MathTransformations.squaretransform"><a class="viewcode-back" href="../../math_transformers.html#regression_pipeline.math_transformers.MathTransformations.squaretransform">[docs]</a>    <span class="k">def</span> <span class="nf">squaretransform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Performs a square transformation of the given array.</span>
 
 <span class="sd">        Parameters</span>
@@ -129,7 +135,7 @@
 
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">X</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="MathTransformations.squareroottransform"><a class="viewcode-back" href="../../regression_pipeline.html#regression_pipeline.math_transformers.MathTransformations.squareroottransform">[docs]</a>    <span class="k">def</span> <span class="nf">squareroottransform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+<div class="viewcode-block" id="MathTransformations.squareroottransform"><a class="viewcode-back" href="../../math_transformers.html#regression_pipeline.math_transformers.MathTransformations.squareroottransform">[docs]</a>    <span class="k">def</span> <span class="nf">squareroottransform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Performs a square root transformation.</span>
 
 <span class="sd">        Parameters</span>
@@ -142,7 +148,7 @@
 
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">X</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="MathTransformations.reciprocaltransform"><a class="viewcode-back" href="../../regression_pipeline.html#regression_pipeline.math_transformers.MathTransformations.reciprocaltransform">[docs]</a>    <span class="k">def</span> <span class="nf">reciprocaltransform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+<div class="viewcode-block" id="MathTransformations.reciprocaltransform"><a class="viewcode-back" href="../../math_transformers.html#regression_pipeline.math_transformers.MathTransformations.reciprocaltransform">[docs]</a>    <span class="k">def</span> <span class="nf">reciprocaltransform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Performs a reciprocal transformation of the array provided.</span>
 
 <span class="sd">        Parameters</span>
@@ -155,7 +161,7 @@
 
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">reciprocal</span><span class="p">(</span><span class="n">X</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="MathTransformations.boxcoxtransform"><a class="viewcode-back" href="../../regression_pipeline.html#regression_pipeline.math_transformers.MathTransformations.boxcoxtransform">[docs]</a>    <span class="k">def</span> <span class="nf">boxcoxtransform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+<div class="viewcode-block" id="MathTransformations.boxcoxtransform"><a class="viewcode-back" href="../../math_transformers.html#regression_pipeline.math_transformers.MathTransformations.boxcoxtransform">[docs]</a>    <span class="k">def</span> <span class="nf">boxcoxtransform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Performs a power transformation using box-cox method.</span>
 
 <span class="sd">        Parameters</span>
@@ -171,7 +177,7 @@
         <span class="n">X_transformed</span> <span class="o">=</span> <span class="n">boxcox</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">X_transformed</span></div>
 
-<div class="viewcode-block" id="MathTransformations.yeojohnsontransform"><a class="viewcode-back" href="../../regression_pipeline.html#regression_pipeline.math_transformers.MathTransformations.yeojohnsontransform">[docs]</a>    <span class="k">def</span> <span class="nf">yeojohnsontransform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+<div class="viewcode-block" id="MathTransformations.yeojohnsontransform"><a class="viewcode-back" href="../../math_transformers.html#regression_pipeline.math_transformers.MathTransformations.yeojohnsontransform">[docs]</a>    <span class="k">def</span> <span class="nf">yeojohnsontransform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Performs power transformation using Yeo-Johnson method.</span>
 
 <span class="sd">        Parameters</span>
@@ -186,7 +192,7 @@
         <span class="n">X_transformed</span> <span class="o">=</span> <span class="n">yeojohnson</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">X_transformed</span></div>
 
-<div class="viewcode-block" id="MathTransformations.quantiletransform"><a class="viewcode-back" href="../../regression_pipeline.html#regression_pipeline.math_transformers.MathTransformations.quantiletransform">[docs]</a>    <span class="k">def</span> <span class="nf">quantiletransform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+<div class="viewcode-block" id="MathTransformations.quantiletransform"><a class="viewcode-back" href="../../math_transformers.html#regression_pipeline.math_transformers.MathTransformations.quantiletransform">[docs]</a>    <span class="k">def</span> <span class="nf">quantiletransform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Performs a quantile transformation of the given array.</span>
 
 <span class="sd">        Parameters</span>
