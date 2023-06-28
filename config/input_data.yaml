@@ -49,6 +49,7 @@ data_contains_nullval: 'True'
 null_fill_procedure: mode
 requires_feature_engineering: 'True'
 requires_feature_selection: 'True'
+ntrials: 100
 requires_hyperparam_opt: 'False'
 requires_feature_encoding: 'True'
 requires_feature_scaling: 'True'

@@ -1,4 +1,5 @@
 import sys
+import json
 import shutil
 import os
 import argparse
@@ -22,7 +23,7 @@ sys.path.append("./regression_pipeline")
 from preprocess import PreProcessData
 from feature_select import FeatureSelect
 from evalmodels import ModelSelection
-from feature_eng import engineer_feature
+from feature_eng import FeatureEngineering
 from vizualization import VisualizationData
 from hyperparam_opt import OptunaOpt
 
@@ -79,6 +80,7 @@ def main():
     null_fill_procedure = input_data.get("null_fill_procedure")
     requires_feature_engineering = input_data.get("requires_feature_engineering")
     requires_feature_selection = input_data.get("requires_feature_selection")
+    ntrials = input_data.get("ntrials")
     requires_hyperparam_opt = input_data.get("requires_hyperparam_opt")
     requires_feature_encoding = input_data.get("requires_feature_encoding")
     requires_feature_scaling = input_data.get("requires_feature_scaling")
@@ -104,7 +106,8 @@ def main():
         preprocess.fill_na(null_fill_procedure)
 
     if requires_feature_engineering == "True":
-        feature_names, preprocess.df = engineer_feature(preprocess.df)
+        feat_eng = FeatureEngineering()
+        feature_names, preprocess.df = feat_eng.engineer_feature(preprocess.df)
     else:
         feature_names = [val for val in original_col_heads if val != target_feature]
 
@@ -149,6 +152,7 @@ def main():
             pval,
             random_state,
             step_rfe,
+            ntrials,
         )
 
         Xtrain = feature_selection.xtrain
@@ -185,7 +189,7 @@ def main():
         results = model_select.run_model_selection(
             models, Xtrain, Xtest, y_train, y_test, updat_feature_names_map
         )
-        return results[0]
+        return results
 
 
 if __name__ == "__main__":
@@ -196,9 +200,9 @@ if __name__ == "__main__":
     pd.set_option("display.max_colwidth", None)
     pd.set_option("display.precision", 3)
 
-    df_cv = abs(all_results.filter(regex="cv|pval|t-stat", axis=1))
+    df_cv = abs(all_results[0].filter(regex="cv|pval|t-stat", axis=1))
     df_oth = abs(
-        all_results.drop(all_results.filter(regex="cv|pval|t-stat").columns, axis=1)
+        all_results[0].drop(all_results[0].filter(regex="cv|pval|t-stat").columns, axis=1)
     )
 
     dfAsString_cv = df_cv.to_string(header=True, index=True)
@@ -215,7 +219,11 @@ if __name__ == "__main__":
     with open("./output/output_results.dat", "w") as f:
         f.write(dfAsString_oth)
 
-    vz = VisualizationData(all_results)
+    vz = VisualizationData(all_results[0])
     vz.plot_train_test_scores()
     vz.plot_cv_train_test_scores()
     vz.plot_pvalues()
+
+    with open("./output/feature_sets.json", 'w') as file:
+        json_string = json.dumps(all_results[1], default=lambda o: o.__dict__, sort_keys=True, indent=2)
+        file.write(json_string)
