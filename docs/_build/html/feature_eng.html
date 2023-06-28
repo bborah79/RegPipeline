@@ -45,7 +45,13 @@
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="preprocess.html">Preprocess</a></li>
 <li class="toctree-l1"><a class="reference internal" href="feature_select.html">Feature Selection</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Feature Engineering</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Feature Engineering</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#regression_pipeline.feature_eng.FeatureEngineering"><code class="docutils literal notranslate"><span class="pre">FeatureEngineering</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#regression_pipeline.feature_eng.FeatureEngineering.engineer_feature"><code class="docutils literal notranslate"><span class="pre">FeatureEngineering.engineer_feature()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="evalmodels.html">Evaluate Models</a></li>
 <li class="toctree-l1"><a class="reference internal" href="hyperparam_opt.html">Hyperparameter optimization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="utils.html">Utilities</a></li>
@@ -77,8 +83,49 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-regression_pipeline.feature_eng">
-<span id="feature-engineering"></span><h1>Feature Engineering<a class="headerlink" href="#module-regression_pipeline.feature_eng" title="Permalink to this heading"></a></h1>
+  <section id="feature-engineering">
+<h1>Feature Engineering<a class="headerlink" href="#feature-engineering" title="Permalink to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="regression_pipeline.feature_eng.FeatureEngineering">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">regression_pipeline.feature_eng.</span></span><span class="sig-name descname"><span class="pre">FeatureEngineering</span></span><a class="reference internal" href="_modules/regression_pipeline/feature_eng.html#FeatureEngineering"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.feature_eng.FeatureEngineering" title="Permalink to this definition"></a></dt>
+<dd><p>Engineers new features or modifies existing features.</p>
+<p>Feature engineering is crucial to enhance performance at times.
+Methods under this module should be able to engineer new appropriate
+features or modifies exsiting feature to make it more appropriate.
+However, these methods are problem specific and one needs to manually
+add them as the problem at hand demands.</p>
+<p class="rubric">Methods</p>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><strong>engineer_feature:</strong></p></td>
+<td><p>Creates new features from existing features</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="regression_pipeline.feature_eng.FeatureEngineering.engineer_feature">
+<span class="sig-name descname"><span class="pre">engineer_feature</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/feature_eng.html#FeatureEngineering.engineer_feature"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.feature_eng.FeatureEngineering.engineer_feature" title="Permalink to this definition"></a></dt>
+<dd><p>Creates new features from the existing features.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>df</strong><span class="classifier">pandas dataframe</span></dt><dd><p>The dataset as a dataframe</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>feature_names</strong><span class="classifier">a list</span></dt><dd><p>A list of the feature names in the original dataset</p>
+</dd>
+<dt><strong>df</strong><span class="classifier">pandas dataframe</span></dt><dd><p>The modified dataframe with the new features</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 
 

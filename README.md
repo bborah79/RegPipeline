@@ -150,3 +150,12 @@ $python main.py --gen-config config/input_data.yaml [--optuna-config config/hype
 
 * After the code is run succefully, an `output` direcotory will be created where all the necessary plots
 and the results in terms of the perfromance of all the models tried will be generated. 
+
+Example
+=========
+
+As an use case example of this regression pipeline, I have taken a dataset for used car price prediction.
+The data can be downloaded from https://www.kaggle.com/datasets/nehalbirla/vehicle-dataset-from-cardekho.
+Moreover, details about the data can be also had from the same link. The feature engineering module
+provided along with this code distribution is with respect to this dataset. As I mentioned above, the 
+`engineer_feature` method in this module must be rewritten by the user for their use case datasets. 

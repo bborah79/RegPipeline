@@ -120,6 +120,8 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="preprocess.html#regression_pipeline.preprocess.PreProcessData.encode_categorical_features">encode_categorical_features() (regression_pipeline.preprocess.PreProcessData method)</a>
 </li>
+      <li><a href="feature_eng.html#regression_pipeline.feature_eng.FeatureEngineering.engineer_feature">engineer_feature() (regression_pipeline.feature_eng.FeatureEngineering method)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="evalmodels.html#regression_pipeline.evalmodels.ModelSelection.evaluate_model_performance">evaluate_model_performance() (regression_pipeline.evalmodels.ModelSelection method)</a>
@@ -132,12 +134,14 @@
 <h2 id="F">F</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="feature_select.html#regression_pipeline.feature_select.FeatureSelect">FeatureSelect (class in regression_pipeline.feature_select)</a>
+      <li><a href="feature_eng.html#regression_pipeline.feature_eng.FeatureEngineering">FeatureEngineering (class in regression_pipeline.feature_eng)</a>
 </li>
-      <li><a href="preprocess.html#regression_pipeline.preprocess.PreProcessData.fill_na">fill_na() (regression_pipeline.preprocess.PreProcessData method)</a>
+      <li><a href="feature_select.html#regression_pipeline.feature_select.FeatureSelect">FeatureSelect (class in regression_pipeline.feature_select)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="preprocess.html#regression_pipeline.preprocess.PreProcessData.fill_na">fill_na() (regression_pipeline.preprocess.PreProcessData method)</a>
+</li>
       <li><a href="utils.html#regression_pipeline.utils.Utilities.filter_features">filter_features() (regression_pipeline.utils.Utilities static method)</a>
 </li>
       <li><a href="feature_select.html#regression_pipeline.feature_select.FeatureSelect.filter_low_variance_features">filter_low_variance_features() (regression_pipeline.feature_select.FeatureSelect method)</a>
@@ -158,19 +162,12 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="feature_select.html#regression_pipeline.feature_select.FeatureSelect.map_orig_feature_names">map_orig_feature_names() (regression_pipeline.feature_select.FeatureSelect method)</a>
 </li>
-      <li><a href="math_transformers.html#regression_pipeline.math_transformers.MathTransformations">MathTransformations (class in regression_pipeline.math_transformers)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="math_transformers.html#regression_pipeline.math_transformers.MathTransformations">MathTransformations (class in regression_pipeline.math_transformers)</a>
+</li>
       <li><a href="evalmodels.html#regression_pipeline.evalmodels.ModelSelection">ModelSelection (class in regression_pipeline.evalmodels)</a>
 </li>
-      <li>
-    module
-
-      <ul>
-        <li><a href="feature_eng.html#module-regression_pipeline.feature_eng">regression_pipeline.feature_eng</a>
-</li>
-      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -217,13 +214,6 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="math_transformers.html#regression_pipeline.math_transformers.MathTransformations.reciprocaltransform">reciprocaltransform() (regression_pipeline.math_transformers.MathTransformations method)</a>
 </li>
-      <li>
-    regression_pipeline.feature_eng
-
-      <ul>
-        <li><a href="feature_eng.html#module-regression_pipeline.feature_eng">module</a>
-</li>
-      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="evalmodels.html#regression_pipeline.evalmodels.ModelSelection.run_model_selection">run_model_selection() (regression_pipeline.evalmodels.ModelSelection method)</a>
@@ -242,12 +232,16 @@
 </li>
       <li><a href="feature_select.html#regression_pipeline.feature_select.FeatureSelect.select_feature_low_vif">select_feature_low_vif() (regression_pipeline.feature_select.FeatureSelect method)</a>
 </li>
-      <li><a href="feature_select.html#regression_pipeline.feature_select.FeatureSelect.select_features_vote">select_features_vote() (regression_pipeline.feature_select.FeatureSelect method)</a>
+      <li><a href="feature_select.html#regression_pipeline.feature_select.FeatureSelect.select_features_BorutaShap">select_features_BorutaShap() (regression_pipeline.feature_select.FeatureSelect method)</a>
 </li>
-      <li><a href="feature_select.html#regression_pipeline.feature_select.FeatureSelect.select_fregression">select_fregression() (regression_pipeline.feature_select.FeatureSelect method)</a>
+      <li><a href="feature_select.html#regression_pipeline.feature_select.FeatureSelect.select_features_using_GA">select_features_using_GA() (regression_pipeline.feature_select.FeatureSelect method)</a>
+</li>
+      <li><a href="feature_select.html#regression_pipeline.feature_select.FeatureSelect.select_features_vote">select_features_vote() (regression_pipeline.feature_select.FeatureSelect method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="feature_select.html#regression_pipeline.feature_select.FeatureSelect.select_fregression">select_fregression() (regression_pipeline.feature_select.FeatureSelect method)</a>
+</li>
       <li><a href="feature_select.html#regression_pipeline.feature_select.FeatureSelect.select_recursive_feature_elimination">select_recursive_feature_elimination() (regression_pipeline.feature_select.FeatureSelect method)</a>
 </li>
       <li><a href="feature_select.html#regression_pipeline.feature_select.FeatureSelect.select_sequential_feature_selector">select_sequential_feature_selector() (regression_pipeline.feature_select.FeatureSelect method)</a>

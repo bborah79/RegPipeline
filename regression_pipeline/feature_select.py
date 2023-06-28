@@ -4,7 +4,9 @@ from sklearn.feature_selection import (
     f_regression,
     SequentialFeatureSelector,
 )
+from genetic_selection import GeneticSelectionCV
 from boruta import BorutaPy
+from BorutaShap import BorutaShap
 import pandas as pd
 import numpy as np
 import re
@@ -71,23 +73,29 @@ class FeatureSelect:
     filter_low_variance_features():
          Drops feature whose variance is low or zero.
 
-    select_recursive_feature_elimination(model):
+    select_recursive_feature_elimination():
          Selects features with recusrsive feature elimination method.
 
-    select_borutapy(rf):
+    select_borutapy():
          Selects features with BorutaPy algorithm.
 
     select_fregression():
          Selects features with correlation significance with the target.
 
-    select_sequential_feature_selector(model):
+    select_sequential_feature_selector():
          Selects feature with sequential feature selection method.
 
     select_feature_low_vif():
          Selects feature with low variance inflation factor avoiding
          multicolinierity.
 
-    select_features_vote(rf, model):
+    select_features_BorutaShap():
+        Selects features with shap values
+
+    select_features_using_GA():
+        Selects features using a genetic algorithm.
+
+    select_features_vote():
          Selects features having majority selection by various methods.
 
     """
@@ -229,6 +237,8 @@ class FeatureSelect:
     def select_recursive_feature_elimination(self, model, cv, step_rfe):
         """Selects features using recursive feature elimination method.
 
+        .. _RecFECV: https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.RFECV.html
+
         Parameters
         ------------
         model: A model instance (i.e. LinearRegression, SVR, etc.)
@@ -237,15 +247,20 @@ class FeatureSelect:
             if integer, then defines the number of cross-validation folds
 
         step_rfe: int or float
-            Please see the sklearn doc for RFECV
+            Please see the sklearn doc for `RecFECV`_.
         """
 
         selector1 = RFECV(model, step=step_rfe, cv=cv)
         selector1.fit(self.xtrain, self.ytrain)
         self.selector1_features = selector1.get_feature_names_out()
 
-    def select_borutapy(self, rf, random_state):
+    def select_borutapy(self, rf, random_state, ntrials):
         """Selects features employing BortaPy algorithm
+
+        .. _BorutaPy: https://github.com/scikit-learn-contrib/boruta_py
+
+        More about the BorutaPy algorithm that is used here can be obtained
+        in `BorutaPy`_.
 
         Parameters
         ------------
@@ -253,9 +268,12 @@ class FeatureSelect:
 
         random_state: int
             Seed value to control the random number generator
+
+        ntrials: int
+            Number of trials/iterations
         """
 
-        selector2 = BorutaPy(rf, n_estimators="auto", random_state=random_state)
+        selector2 = BorutaPy(rf, n_estimators="auto", max_iter = ntrials, random_state=random_state)
         selector2.fit(self.xtrain, self.ytrain)
         self.selector2_features = np.zeros(self.xtrain.shape[1], dtype=object)
 
@@ -268,8 +286,10 @@ class FeatureSelect:
     def select_fregression(self, pval):
         """Selects features based on univariate linear regression tests
 
+        .. _f_regression: https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.f_regression.html
+
         The f_regression algorithm as implemented in sklearn is being used
-        here. More can be read from the sklearn f_regression documentation.
+        here. More can be read from the sklearn `f_regression`_ documentation.
 
         Parameters
         -------------
@@ -291,8 +311,10 @@ class FeatureSelect:
     def select_sequential_feature_selector(self, model, cv, tolerance, njobs):
         """Selects features according to sequential feature selection method.
 
+        .. _SeqFS: https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.SequentialFeatureSelector.html
+
         The sequential feature selector implemented in sklearn is being used
-        here. More of it can be read from the sklearn doocumentation.
+        here. More of it can be read from the sklearn doocumentation `SeqFS`_.
 
         Parameters
         -------------
@@ -334,6 +356,79 @@ class FeatureSelect:
                 self.selector5_features[ii] = "".join(["x", str(idx)])
                 ii = ii + 1
 
+    def select_features_BorutaShap(self, random_state, ntrials):
+        """Selects feature set using a shap values from BorutaShap
+
+        .. _BorutaShap: https://github.com/Ekeany/Boruta-Shap
+
+        The BorutaShap method implemented here can be obtained from `BorutaShap`_.
+
+        Parameters
+        ------------
+        random_state: int
+            Seed value to control the random number generator
+
+        ntrials: int
+            Number of trials.
+
+        """
+
+        selector6 = BorutaShap(importance_measure="shap", classification=False)
+        xcols = ["x" + str(ii) for ii in range(self.xtrain.shape[1])]
+        X = pd.DataFrame(self.xtrain, columns=xcols)
+        selector6.fit(
+            X=X, y=self.ytrain, n_trials=ntrials, verbose=False, random_state=random_state
+        )
+
+        self.selector6_features = np.array(selector6.accepted, dtype=object)
+
+    def select_features_using_GA(self, model, cv, njobs):
+        """Selects features using genetic algorithm
+
+        .. _GeneticAlgo: https://pypi.org/project/sklearn-genetic/
+
+        The genetic algorithm used here is adopted from `GeneticAlgo`_.
+        More about the method can be read `GeneticAlgo`_.
+
+        Parameters
+        -------------
+        model : a model instance
+        cv: int, cross-validation generator or an iterator
+            if int, then defines the number of cross-validation folds
+        njobs: int
+            number of jobs to run in parallel
+
+        """
+
+        estimator = model
+        selector7 = GeneticSelectionCV(
+            estimator,
+            cv=cv,
+            scoring="neg_mean_squared_error",
+            n_population=100,
+            crossover_proba=0.5,
+            mutation_proba=0.2,
+            n_generations=40,
+            crossover_independent_proba=0.5,
+            mutation_independent_proba=0.05,
+            tournament_size=3,
+            n_gen_no_change=10,
+            caching=True,
+            n_jobs=njobs,
+        )
+
+        selector7 = selector7.fit(self.xtrain, self.ytrain)
+
+        self.selector7_features = np.zeros(self.xtrain.shape[1], dtype=object)
+
+        ii = 0
+        for idx, val in enumerate(selector7.support_):
+            if val == True:
+                self.selector7_features[ii] = "".join(["x", str(idx)])
+                ii = ii + 1
+
+        print(self.selector7_features)
+
     def select_features_vote(
         self,
         rf,
@@ -345,6 +440,7 @@ class FeatureSelect:
         pval,
         random_state,
         step_rfe,
+        ntrials,
     ):
         """Selects features that are selected by majority of the methods as
         above
@@ -383,14 +479,20 @@ class FeatureSelect:
 
         step_rfe: int or float
             Please see the sklearn doc for RFECV
+
+        ntrials: int
+            Number of trials for Boruta algorithm.
+
         """
 
         self.filter_low_variance_features(var_threshold)
         self.select_recursive_feature_elimination(model, cv, step_rfe)
         self.select_feature_low_vif()
-        self.select_borutapy(rf, random_state)
+        self.select_borutapy(rf, random_state, ntrials)
         self.select_fregression(pval)
         self.select_sequential_feature_selector(model, cv, tolerance, njobs)
+        self.select_features_BorutaShap(random_state, ntrials)
+        self.select_features_using_GA(model, cv, njobs)
 
         count = np.zeros(len(self.updat_feature_names_sub_), dtype=int)
 
@@ -405,8 +507,12 @@ class FeatureSelect:
                 count[idx] = count[idx] + 1
             if feature in self.selector5_features:
                 count[idx] = count[idx] + 1
+            if feature in self.selector6_features:
+                count[idx] = count[idx] + 1
+            if feature in self.selector7_features:
+                count[idx] = count[idx] + 1
 
-        prob = [val / 5.0 for val in count]
+        prob = [val / 7.0 for val in count]
         self.selected_features_ = [
             val for val, p in zip(self.updat_feature_names_sub_, prob) if p > 0.5
         ]
@@ -415,6 +521,7 @@ class FeatureSelect:
         self.selector2_features = np.trim_zeros(self.selector2_features)
         self.selector3_features = np.trim_zeros(self.selector3_features)
         self.selector5_features = np.trim_zeros(self.selector5_features)
+        self.selector7_features = np.trim_zeros(self.selector7_features)
 
         self.all_selected_features_ = [
             self.selector0_features,
@@ -423,5 +530,7 @@ class FeatureSelect:
             self.selector3_features,
             self.selector4_features,
             self.selector5_features,
+            self.selector6_features,
+            self.selector7_features,
             np.array(self.selected_features_, dtype=object),
         ]

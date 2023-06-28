@@ -51,6 +51,8 @@
 <li class="toctree-l3"><a class="reference internal" href="#regression_pipeline.feature_select.FeatureSelect.map_orig_feature_names"><code class="docutils literal notranslate"><span class="pre">FeatureSelect.map_orig_feature_names()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#regression_pipeline.feature_select.FeatureSelect.select_borutapy"><code class="docutils literal notranslate"><span class="pre">FeatureSelect.select_borutapy()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#regression_pipeline.feature_select.FeatureSelect.select_feature_low_vif"><code class="docutils literal notranslate"><span class="pre">FeatureSelect.select_feature_low_vif()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#regression_pipeline.feature_select.FeatureSelect.select_features_BorutaShap"><code class="docutils literal notranslate"><span class="pre">FeatureSelect.select_features_BorutaShap()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#regression_pipeline.feature_select.FeatureSelect.select_features_using_GA"><code class="docutils literal notranslate"><span class="pre">FeatureSelect.select_features_using_GA()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#regression_pipeline.feature_select.FeatureSelect.select_features_vote"><code class="docutils literal notranslate"><span class="pre">FeatureSelect.select_features_vote()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#regression_pipeline.feature_select.FeatureSelect.select_fregression"><code class="docutils literal notranslate"><span class="pre">FeatureSelect.select_fregression()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#regression_pipeline.feature_select.FeatureSelect.select_recursive_feature_elimination"><code class="docutils literal notranslate"><span class="pre">FeatureSelect.select_recursive_feature_elimination()</span></code></a></li>
@@ -149,22 +151,28 @@ features.</p>
 <tr class="row-even"><td><p><strong>filter_low_variance_features():</strong></p></td>
 <td><p>Drops feature whose variance is low or zero.</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>select_recursive_feature_elimination(model):</strong></p></td>
+<tr class="row-odd"><td><p><strong>select_recursive_feature_elimination():</strong></p></td>
 <td><p>Selects features with recusrsive feature elimination method.</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>select_borutapy(rf):</strong></p></td>
+<tr class="row-even"><td><p><strong>select_borutapy():</strong></p></td>
 <td><p>Selects features with BorutaPy algorithm.</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>select_fregression():</strong></p></td>
 <td><p>Selects features with correlation significance with the target.</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>select_sequential_feature_selector(model):</strong></p></td>
+<tr class="row-even"><td><p><strong>select_sequential_feature_selector():</strong></p></td>
 <td><p>Selects feature with sequential feature selection method.</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>select_feature_low_vif():</strong></p></td>
 <td><p>Selects feature with low variance inflation factor avoiding multicolinierity.</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>select_features_vote(rf, model):</strong></p></td>
+<tr class="row-even"><td><p><strong>select_features_BorutaShap():</strong></p></td>
+<td><p>Selects features with shap values</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>select_features_using_GA():</strong></p></td>
+<td><p>Selects features using a genetic algorithm.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>select_features_vote():</strong></p></td>
 <td><p>Selects features having majority selection by various methods.</p></td>
 </tr>
 </tbody>
@@ -209,13 +217,17 @@ features and the values being the original feature names.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="regression_pipeline.feature_select.FeatureSelect.select_borutapy">
-<span class="sig-name descname"><span class="pre">select_borutapy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/feature_select.html#FeatureSelect.select_borutapy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.feature_select.FeatureSelect.select_borutapy" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">select_borutapy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ntrials</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/feature_select.html#FeatureSelect.select_borutapy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.feature_select.FeatureSelect.select_borutapy" title="Permalink to this definition"></a></dt>
 <dd><p>Selects features employing BortaPy algorithm</p>
+<p>More about the BorutaPy algorithm that is used here can be obtained
+in <a class="reference external" href="https://github.com/scikit-learn-contrib/boruta_py">BorutaPy</a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>rf: A random forest regression instance</strong></dt><dd></dd>
 <dt><strong>random_state: int</strong></dt><dd><p>Seed value to control the random number generator</p>
+</dd>
+<dt><strong>ntrials: int</strong></dt><dd><p>Number of trials/iterations</p>
 </dd>
 </dl>
 </dd>
@@ -234,8 +246,44 @@ of the data.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="regression_pipeline.feature_select.FeatureSelect.select_features_BorutaShap">
+<span class="sig-name descname"><span class="pre">select_features_BorutaShap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">random_state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ntrials</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/feature_select.html#FeatureSelect.select_features_BorutaShap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.feature_select.FeatureSelect.select_features_BorutaShap" title="Permalink to this definition"></a></dt>
+<dd><p>Selects feature set using a shap values from BorutaShap</p>
+<p>The BorutaShap method implemented here can be obtained from <a class="reference external" href="https://github.com/Ekeany/Boruta-Shap">BorutaShap</a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>random_state: int</strong></dt><dd><p>Seed value to control the random number generator</p>
+</dd>
+<dt><strong>ntrials: int</strong></dt><dd><p>Number of trials.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="regression_pipeline.feature_select.FeatureSelect.select_features_using_GA">
+<span class="sig-name descname"><span class="pre">select_features_using_GA</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cv</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">njobs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/feature_select.html#FeatureSelect.select_features_using_GA"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.feature_select.FeatureSelect.select_features_using_GA" title="Permalink to this definition"></a></dt>
+<dd><p>Selects features using genetic algorithm</p>
+<p>The genetic algorithm used here is adopted from <a class="reference external" href="https://pypi.org/project/sklearn-genetic/">GeneticAlgo</a>.
+More about the method can be read <a class="reference external" href="https://pypi.org/project/sklearn-genetic/">GeneticAlgo</a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>model</strong><span class="classifier">a model instance</span></dt><dd></dd>
+<dt><strong>cv: int, cross-validation generator or an iterator</strong></dt><dd><p>if int, then defines the number of cross-validation folds</p>
+</dd>
+<dt><strong>njobs: int</strong></dt><dd><p>number of jobs to run in parallel</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="regression_pipeline.feature_select.FeatureSelect.select_features_vote">
-<span class="sig-name descname"><span class="pre">select_features_vote</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cv</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">njobs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tolerance</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">var_threshold</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pval</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step_rfe</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/feature_select.html#FeatureSelect.select_features_vote"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.feature_select.FeatureSelect.select_features_vote" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">select_features_vote</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cv</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">njobs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tolerance</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">var_threshold</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pval</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step_rfe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ntrials</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/feature_select.html#FeatureSelect.select_features_vote"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.feature_select.FeatureSelect.select_features_vote" title="Permalink to this definition"></a></dt>
 <dd><p>Selects features that are selected by majority of the methods as
 above</p>
 <p>Feature which are selected by majority of the methods implemented here
@@ -264,6 +312,8 @@ significant or not.</p>
 </dd>
 <dt><strong>step_rfe: int or float</strong></dt><dd><p>Please see the sklearn doc for RFECV</p>
 </dd>
+<dt><strong>ntrials: int</strong></dt><dd><p>Number of trials for Boruta algorithm.</p>
+</dd>
 </dl>
 </dd>
 </dl>
@@ -274,7 +324,7 @@ significant or not.</p>
 <span class="sig-name descname"><span class="pre">select_fregression</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pval</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/feature_select.html#FeatureSelect.select_fregression"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.feature_select.FeatureSelect.select_fregression" title="Permalink to this definition"></a></dt>
 <dd><p>Selects features based on univariate linear regression tests</p>
 <p>The f_regression algorithm as implemented in sklearn is being used
-here. More can be read from the sklearn f_regression documentation.</p>
+here. More can be read from the sklearn <a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.f_regression.html">f_regression</a> documentation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
@@ -296,7 +346,7 @@ significant or not.</p>
 <dt><strong>model: A model instance (i.e. LinearRegression, SVR, etc.)</strong></dt><dd></dd>
 <dt><strong>cv: int, cross-validation generator or an iterable</strong></dt><dd><p>if integer, then defines the number of cross-validation folds</p>
 </dd>
-<dt><strong>step_rfe: int or float</strong></dt><dd><p>Please see the sklearn doc for RFECV</p>
+<dt><strong>step_rfe: int or float</strong></dt><dd><p>Please see the sklearn doc for <a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.RFECV.html">RecFECV</a>.</p>
 </dd>
 </dl>
 </dd>
@@ -308,7 +358,7 @@ significant or not.</p>
 <span class="sig-name descname"><span class="pre">select_sequential_feature_selector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cv</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tolerance</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">njobs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/regression_pipeline/feature_select.html#FeatureSelect.select_sequential_feature_selector"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#regression_pipeline.feature_select.FeatureSelect.select_sequential_feature_selector" title="Permalink to this definition"></a></dt>
 <dd><p>Selects features according to sequential feature selection method.</p>
 <p>The sequential feature selector implemented in sklearn is being used
-here. More of it can be read from the sklearn doocumentation.</p>
+here. More of it can be read from the sklearn doocumentation <a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.SequentialFeatureSelector.html">SeqFS</a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">

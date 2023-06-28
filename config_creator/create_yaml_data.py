@@ -4,6 +4,12 @@ import yaml
 from yaml.loader import FullLoader
 
 def create_yaml_gen_input():
+    '''Creates configurations to run model selection
+
+    This method creates a general configuration file
+    that is required to run the model selection.
+    
+    '''
     cwd = os.getcwd()
     cw_path = os.path.dirname(cwd) + os.sep + 'data/'
     input_data = dict(
@@ -26,8 +32,9 @@ def create_yaml_gen_input():
             },
             "scoring": ["r2", "neg_mean_squared_error"],
             "score_funcs": ["r2_score", "mean_squared_error"],
-        },
+        }, # regression models and the model evaluation scoring methods
         # These are problem specific parameters related to encoding
+        # Provide below a list of the features in the dataset
         original_col_heads=[
             "Make",
             "Model",
@@ -50,7 +57,7 @@ def create_yaml_gen_input():
             "Seating_capacity",
             "Fuel_tank_capacity",
         ],
-        target_feature="Price",
+        target_feature="Price", # The target column head
         requires_target_transformation="True",
         target_transformer="logtransform",
         requires_feature_transformation="False",
@@ -59,11 +66,15 @@ def create_yaml_gen_input():
         null_fill_procedure="mode",
         requires_feature_engineering="True",
         requires_feature_selection="True",
+        ntrials = 100, #Provide the number of trials for Boruta algorithm
         requires_hyperparam_opt="False",
         requires_feature_encoding="True",
         requires_feature_scaling="True",
         scaler="MinMaxScaler()",
         encoding_requires=["catboost_encoding", "ordinal_encoding"],
+
+        # Provide a dictionary with the keys as the encoder and the values
+        # as the features that require encoding with that specific encoder
         features_to_encode={
             "catboost_encoding": [
                 "Model",
@@ -80,6 +91,8 @@ def create_yaml_gen_input():
                 "Drivetrain",
             ],
         },
+        #Provide a list of dictionaries for mapping the ordinal encoding of
+        #each feature that requires ordinal encoding.
         ordinal_encode_map=[
             {
                 "col": "Owner",

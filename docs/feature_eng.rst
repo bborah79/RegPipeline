@@ -1,5 +1,5 @@
 Feature Engineering
 ====================
 
-.. automodule:: regression_pipeline.feature_eng
+.. autoclass:: regression_pipeline.feature_eng.FeatureEngineering
    :members:
