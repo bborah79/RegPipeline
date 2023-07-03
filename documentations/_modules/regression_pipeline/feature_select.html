@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>regression_pipeline.feature_select &mdash; Regression pipeline 0.00, 2023 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Regression pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../preprocess.html">Preprocess</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../feature_select.html">Feature Selection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../feature_eng.html">Feature Engineering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../regularization.html">Regularizations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../evalmodels.html">Evaluate Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../hyperparam_opt.html">Hyperparameter optimization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../utils.html">Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../math_transformers.html">Mathematical Feature Transformation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../vizualization.html">Visualization</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Regression pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">regression_pipeline.feature_select</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for regression_pipeline.feature_select</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">sklearn.feature_selection</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">RFECV</span><span class="p">,</span>
+    <span class="n">VarianceThreshold</span><span class="p">,</span>
+    <span class="n">f_regression</span><span class="p">,</span>
+    <span class="n">SequentialFeatureSelector</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">genetic_selection</span> <span class="kn">import</span> <span class="n">GeneticSelectionCV</span>
+<span class="kn">from</span> <span class="nn">boruta</span> <span class="kn">import</span> <span class="n">BorutaPy</span>
+<span class="kn">from</span> <span class="nn">BorutaShap</span> <span class="kn">import</span> <span class="n">BorutaShap</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">re</span>
+
+<span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">Utilities</span>
+
+
+<div class="viewcode-block" id="FeatureSelect"><a class="viewcode-back" href="../../feature_select.html#regression_pipeline.feature_select.FeatureSelect">[docs]</a><span class="k">class</span> <span class="nc">FeatureSelect</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Feature selection process</span>
+
+<span class="sd">    Variety of feature selection methods are employed in order to obtain</span>
+<span class="sd">    sets of important features.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    xtrain : numpy ndarray</span>
+<span class="sd">         Training data</span>
+
+<span class="sd">    xtest : numpy ndarray</span>
+<span class="sd">         Test dataset</span>
+
+<span class="sd">    ytrain : numpy ndarray</span>
+<span class="sd">         Training target</span>
+
+<span class="sd">    feature_names : a list</span>
+<span class="sd">         A list of all the feature names.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    org_feature_names_sub_ : an array of shape (n_features, )</span>
+<span class="sd">         An array of dummy feature names in the subscripted form like x0, x1,</span>
+<span class="sd">         x2...xn.</span>
+
+<span class="sd">    org_feature_names_map_ : a dictionary</span>
+<span class="sd">         A dictionary that maps the dummy features to the original feature names</span>
+<span class="sd">         of the problem at hand.</span>
+
+<span class="sd">    updat_feature_names_sub_ : an array of shape (k_features, )</span>
+<span class="sd">         An array of the updated dummy features when some features are dropped</span>
+<span class="sd">         from the data.</span>
+
+<span class="sd">    updat_feature_names_map_ : a dictionary</span>
+<span class="sd">         A dictionary of the updated map of the dummy features to the original</span>
+<span class="sd">         features.</span>
+
+<span class="sd">    all_selected_features_ : a list</span>
+<span class="sd">         A list of all the feature subsets selected by various methods.</span>
+
+<span class="sd">    selected_features_ : a list</span>
+<span class="sd">         A list of selected feature names selected by majority voting.</span>
+
+<span class="sd">    Methods</span>
+<span class="sd">    -------</span>
+<span class="sd">    create_feature_names_sub():</span>
+<span class="sd">         Creates an array of feature names in the form x0, x1, x2,.....,xn.</span>
+
+<span class="sd">    map_orig_feature_name():</span>
+<span class="sd">         Maps the orginal feature names with the feature names in the form</span>
+<span class="sd">         x0,x1,.....xn.</span>
+
+<span class="sd">    update_org_feature_names_map(number_dropped_features, dropped_features):</span>
+<span class="sd">         Updates feature names and the feature map.</span>
+
+<span class="sd">    filter_low_variance_features():</span>
+<span class="sd">         Drops feature whose variance is low or zero.</span>
+
+<span class="sd">    select_recursive_feature_elimination():</span>
+<span class="sd">         Selects features with recusrsive feature elimination method.</span>
+
+<span class="sd">    select_borutapy():</span>
+<span class="sd">         Selects features with BorutaPy algorithm.</span>
+
+<span class="sd">    select_fregression():</span>
+<span class="sd">         Selects features with correlation significance with the target.</span>
+
+<span class="sd">    select_sequential_feature_selector():</span>
+<span class="sd">         Selects feature with sequential feature selection method.</span>
+
+<span class="sd">    select_feature_low_vif():</span>
+<span class="sd">         Selects feature with low variance inflation factor avoiding</span>
+<span class="sd">         multicolinierity.</span>
+
+<span class="sd">    select_features_BorutaShap():</span>
+<span class="sd">        Selects features with shap values</span>
+
+<span class="sd">    select_features_using_GA():</span>
+<span class="sd">        Selects features using a genetic algorithm.</span>
+
+<span class="sd">    select_features_vote():</span>
+<span class="sd">         Selects features having majority selection by various methods.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xtrain</span><span class="p">,</span> <span class="n">xtest</span><span class="p">,</span> <span class="n">ytrain</span><span class="p">,</span> <span class="n">feature_names</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xtrain</span> <span class="o">=</span> <span class="n">xtrain</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xtest</span> <span class="o">=</span> <span class="n">xtest</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ytrain</span> <span class="o">=</span> <span class="n">ytrain</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">feature_names</span> <span class="o">=</span> <span class="n">feature_names</span>
+
+<div class="viewcode-block" id="FeatureSelect.create_feature_names_sub"><a class="viewcode-back" href="../../feature_select.html#regression_pipeline.feature_select.FeatureSelect.create_feature_names_sub">[docs]</a>    <span class="k">def</span> <span class="nf">create_feature_names_sub</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Creates an array of dummy feature names</span>
+
+<span class="sd">        A set of feature names in the form of x0, x1, x2,....xn are created as</span>
+<span class="sd">        these will be used while running the machine learning algorithms with</span>
+<span class="sd">        the data in an array form of shape (n_samples, n_features).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">org_feature_names_sub_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+            <span class="p">[</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">ii</span><span class="p">)])</span> <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">feature_names</span><span class="p">))],</span>
+            <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;object&quot;</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="FeatureSelect.map_orig_feature_names"><a class="viewcode-back" href="../../feature_select.html#regression_pipeline.feature_select.FeatureSelect.map_orig_feature_names">[docs]</a>    <span class="k">def</span> <span class="nf">map_orig_feature_names</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Maps the dummy feature names to the original feature names.</span>
+
+<span class="sd">        The original feature names are necessary in order to interpret the</span>
+<span class="sd">        models. Therefor, this function maps the dummy features (x0, x1,</span>
+<span class="sd">        x2,...xn) in to the corresponding original feature names of the problem</span>
+<span class="sd">        of interest. A dictionary is created with the keys being the dummy</span>
+<span class="sd">        features and the values being the original feature names.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">create_feature_names_sub</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">org_feature_names_map_</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">val1</span><span class="p">:</span> <span class="n">val2</span>
+            <span class="k">for</span> <span class="n">val1</span><span class="p">,</span> <span class="n">val2</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">org_feature_names_sub_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">feature_names</span><span class="p">)</span>
+        <span class="p">}</span></div>
+
+<div class="viewcode-block" id="FeatureSelect.update_org_feature_names_map"><a class="viewcode-back" href="../../feature_select.html#regression_pipeline.feature_select.FeatureSelect.update_org_feature_names_map">[docs]</a>    <span class="k">def</span> <span class="nf">update_org_feature_names_map</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">number_dropped_features</span><span class="p">,</span> <span class="n">dropped_features</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Updates the feature names map in case some features are dropped.</span>
+
+<span class="sd">        During the feature selection process some features may get dropped</span>
+<span class="sd">        completely from the data due to their low variance or other reason. In</span>
+<span class="sd">        such case, it is necessary to keep a track of the features dropped and</span>
+<span class="sd">        update the feature name map for book keeping.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        -----------</span>
+<span class="sd">        number_dropped_features: int</span>
+<span class="sd">                Number of features dropped.</span>
+
+<span class="sd">        dropped_features: A list</span>
+<span class="sd">                A list of the dropped feature names</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">temp</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s2">&quot;([a-zA-Z]+)([0-9]+)&quot;</span><span class="p">)</span>
+        <span class="n">cnt</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">oth_indx</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">init_indx</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">updat_feature_names_map_</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">updat_shape</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">org_feature_names_sub_</span><span class="p">)</span> <span class="o">-</span> <span class="n">number_dropped_features</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">updat_feature_names_sub_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">updat_shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
+
+        <span class="n">changed_feature_names_map</span> <span class="o">=</span> <span class="nb">dict</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">org_feature_names_map_</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">dropped_features</span><span class="p">:</span>
+            <span class="n">changed_feature_names_map</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">changed_feature_names_map</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">cnt</span> <span class="o">=</span> <span class="n">cnt</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">cnt</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">init_indx</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">temp</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="o">.</span><span class="n">groups</span><span class="p">()[</span><span class="mi">1</span><span class="p">])</span>
+                <span class="k">if</span> <span class="n">init_indx</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">updat_feature_names_sub_</span><span class="p">[</span><span class="n">cnt</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="mi">0</span><span class="p">)])</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">updat_feature_names_map_</span><span class="p">[</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="mi">0</span><span class="p">)])]</span> <span class="o">=</span> <span class="n">v</span>
+                    <span class="n">init_indx</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="k">elif</span> <span class="n">init_indx</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">updat_feature_names_sub_</span><span class="p">[</span><span class="n">cnt</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                        <span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">init_indx</span><span class="p">)]</span>
+                    <span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">updat_feature_names_map_</span><span class="p">[</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">init_indx</span><span class="p">)])]</span> <span class="o">=</span> <span class="n">v</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">oth_indx</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">temp</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="o">.</span><span class="n">groups</span><span class="p">()[</span><span class="mi">1</span><span class="p">])</span>
+
+            <span class="n">diff</span> <span class="o">=</span> <span class="n">oth_indx</span> <span class="o">-</span> <span class="n">init_indx</span>
+
+            <span class="k">if</span> <span class="n">diff</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">updat_feature_names_sub_</span><span class="p">[</span><span class="n">cnt</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">oth_indx</span><span class="p">)])</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">updat_feature_names_map_</span><span class="p">[</span>
+                    <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">oth_indx</span><span class="p">)])</span>
+                <span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">org_feature_names_map_</span><span class="p">[</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">oth_indx</span><span class="p">)])]</span>
+                <span class="n">init_indx</span> <span class="o">=</span> <span class="n">oth_indx</span>
+            <span class="k">elif</span> <span class="n">diff</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">updat_feature_names_sub_</span><span class="p">[</span><span class="n">cnt</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                    <span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">oth_indx</span> <span class="o">-</span> <span class="p">(</span><span class="n">diff</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))]</span>
+                <span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">updat_feature_names_map_</span><span class="p">[</span>
+                    <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">oth_indx</span> <span class="o">-</span> <span class="p">(</span><span class="n">diff</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))])</span>
+                <span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">org_feature_names_map_</span><span class="p">[</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">oth_indx</span><span class="p">)])]</span>
+                <span class="n">init_indx</span> <span class="o">=</span> <span class="n">oth_indx</span> <span class="o">-</span> <span class="p">(</span><span class="n">diff</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FeatureSelect.filter_low_variance_features"><a class="viewcode-back" href="../../feature_select.html#regression_pipeline.feature_select.FeatureSelect.filter_low_variance_features">[docs]</a>    <span class="k">def</span> <span class="nf">filter_low_variance_features</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var_threshold</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Filters features that have low variance than the threshold</span>
+
+<span class="sd">        Some features in the data may have zero variance or variance much lower</span>
+<span class="sd">        than the pre-set threshold. Such features are carry not much</span>
+<span class="sd">        information and hence need to be dropped from the data.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ------------</span>
+<span class="sd">        var_threshold: float</span>
+<span class="sd">            Threshold for the variance for dropping a particular feature from</span>
+<span class="sd">            the data.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">selector0</span> <span class="o">=</span> <span class="n">VarianceThreshold</span><span class="p">(</span><span class="n">threshold</span><span class="o">=</span><span class="n">var_threshold</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xtrain</span> <span class="o">=</span> <span class="n">selector0</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xtrain</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xtest</span> <span class="o">=</span> <span class="n">selector0</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xtest</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">selector0_features</span> <span class="o">=</span> <span class="n">selector0</span><span class="o">.</span><span class="n">get_feature_names_out</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">map_orig_feature_names</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selector0_features</span><span class="p">)</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">org_feature_names_sub_</span><span class="p">):</span>
+            <span class="n">num_dropped_features</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">org_feature_names_sub_</span><span class="p">)</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span>
+                <span class="n">selector0_features</span>
+            <span class="p">)</span>
+            <span class="n">dropped_features</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">fet</span>
+                <span class="k">for</span> <span class="n">fet</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">org_feature_names_sub_</span>
+                <span class="k">if</span> <span class="n">fet</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">selector0_features</span>
+            <span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">update_org_feature_names_map</span><span class="p">(</span><span class="n">num_dropped_features</span><span class="p">,</span> <span class="n">dropped_features</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">selector0_features</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">updat_feature_names_sub_</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">updat_feature_names_map_</span> <span class="o">=</span> <span class="nb">dict</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">org_feature_names_map_</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">updat_feature_names_sub_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">org_feature_names_sub_</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FeatureSelect.select_recursive_feature_elimination"><a class="viewcode-back" href="../../feature_select.html#regression_pipeline.feature_select.FeatureSelect.select_recursive_feature_elimination">[docs]</a>    <span class="k">def</span> <span class="nf">select_recursive_feature_elimination</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">cv</span><span class="p">,</span> <span class="n">step_rfe</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Selects features using recursive feature elimination method.</span>
+
+<span class="sd">        .. _RecFECV: https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.RFECV.html</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ------------</span>
+<span class="sd">        model: A model instance (i.e. LinearRegression, SVR, etc.)</span>
+
+<span class="sd">        cv: int, cross-validation generator or an iterable</span>
+<span class="sd">            if integer, then defines the number of cross-validation folds</span>
+
+<span class="sd">        step_rfe: int or float</span>
+<span class="sd">            Please see the sklearn doc for `RecFECV`_.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">selector1</span> <span class="o">=</span> <span class="n">RFECV</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="n">step_rfe</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="n">cv</span><span class="p">)</span>
+        <span class="n">selector1</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xtrain</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ytrain</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">selector1_features</span> <span class="o">=</span> <span class="n">selector1</span><span class="o">.</span><span class="n">get_feature_names_out</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="FeatureSelect.select_borutapy"><a class="viewcode-back" href="../../feature_select.html#regression_pipeline.feature_select.FeatureSelect.select_borutapy">[docs]</a>    <span class="k">def</span> <span class="nf">select_borutapy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rf</span><span class="p">,</span> <span class="n">random_state</span><span class="p">,</span> <span class="n">ntrials</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Selects features employing BortaPy algorithm</span>
+
+<span class="sd">        .. _BorutaPy: https://github.com/scikit-learn-contrib/boruta_py</span>
+
+<span class="sd">        More about the BorutaPy algorithm that is used here can be obtained</span>
+<span class="sd">        in `BorutaPy`_.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ------------</span>
+<span class="sd">        rf: A random forest regression instance</span>
+
+<span class="sd">        random_state: int</span>
+<span class="sd">            Seed value to control the random number generator</span>
+
+<span class="sd">        ntrials: int</span>
+<span class="sd">            Number of trials/iterations</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">selector2</span> <span class="o">=</span> <span class="n">BorutaPy</span><span class="p">(</span><span class="n">rf</span><span class="p">,</span> <span class="n">n_estimators</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span> <span class="n">max_iter</span> <span class="o">=</span> <span class="n">ntrials</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="n">random_state</span><span class="p">)</span>
+        <span class="n">selector2</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xtrain</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ytrain</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">selector2_features</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xtrain</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
+
+        <span class="n">ii</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">selector2</span><span class="o">.</span><span class="n">support_</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">val</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">selector2_features</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">idx</span><span class="p">)])</span>
+                <span class="n">ii</span> <span class="o">=</span> <span class="n">ii</span> <span class="o">+</span> <span class="mi">1</span></div>
+
+<div class="viewcode-block" id="FeatureSelect.select_fregression"><a class="viewcode-back" href="../../feature_select.html#regression_pipeline.feature_select.FeatureSelect.select_fregression">[docs]</a>    <span class="k">def</span> <span class="nf">select_fregression</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pval</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Selects features based on univariate linear regression tests</span>
+
+<span class="sd">        .. _f_regression: https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.f_regression.html</span>
+
+<span class="sd">        The f_regression algorithm as implemented in sklearn is being used</span>
+<span class="sd">        here. More can be read from the sklearn `f_regression`_ documentation.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        -------------</span>
+<span class="sd">        pval: float</span>
+<span class="sd">            p-value threshold in order to decide if the regression is</span>
+<span class="sd">            significant or not.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">selector3</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+            <span class="n">f_regression</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xtrain</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ytrain</span><span class="p">),</span> <span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;F-static&quot;</span><span class="p">,</span> <span class="s2">&quot;p-value&quot;</span><span class="p">]</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">T</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">selector3_features</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">selector3</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
+        <span class="n">ii</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">selector3</span><span class="p">[</span><span class="s2">&quot;p-value&quot;</span><span class="p">]):</span>
+            <span class="k">if</span> <span class="n">val</span> <span class="o">&lt;</span> <span class="n">pval</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">selector3_features</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">idx</span><span class="p">)])</span>
+                <span class="n">ii</span> <span class="o">=</span> <span class="n">ii</span> <span class="o">+</span> <span class="mi">1</span></div>
+
+<div class="viewcode-block" id="FeatureSelect.select_sequential_feature_selector"><a class="viewcode-back" href="../../feature_select.html#regression_pipeline.feature_select.FeatureSelect.select_sequential_feature_selector">[docs]</a>    <span class="k">def</span> <span class="nf">select_sequential_feature_selector</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">cv</span><span class="p">,</span> <span class="n">tolerance</span><span class="p">,</span> <span class="n">njobs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Selects features according to sequential feature selection method.</span>
+
+<span class="sd">        .. _SeqFS: https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.SequentialFeatureSelector.html</span>
+
+<span class="sd">        The sequential feature selector implemented in sklearn is being used</span>
+<span class="sd">        here. More of it can be read from the sklearn doocumentation `SeqFS`_.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        -------------</span>
+<span class="sd">        model: A model instance (i.e. LinearRegression, SVR, etc.)</span>
+
+<span class="sd">        cv: int, cross-validation generator or an iterator</span>
+<span class="sd">            if int, then defines the number corss-validation folds.</span>
+
+<span class="sd">        tolerance: float</span>
+<span class="sd">            If the score is not incremented by at least tol between</span>
+<span class="sd">            two consecutive feature additions or removals, stop adding or</span>
+<span class="sd">            removing. More explanation can be read from sklearn doc.</span>
+
+<span class="sd">        njobs: int</span>
+<span class="sd">            Number of jobs to run in parallel.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">selector4</span> <span class="o">=</span> <span class="n">SequentialFeatureSelector</span><span class="p">(</span>
+            <span class="n">model</span><span class="p">,</span> <span class="n">n_features_to_select</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="n">tolerance</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="n">cv</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=</span><span class="n">njobs</span>
+        <span class="p">)</span>
+        <span class="n">selector4</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xtrain</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ytrain</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">selector4_features</span> <span class="o">=</span> <span class="n">selector4</span><span class="o">.</span><span class="n">get_feature_names_out</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="FeatureSelect.select_feature_low_vif"><a class="viewcode-back" href="../../feature_select.html#regression_pipeline.feature_select.FeatureSelect.select_feature_low_vif">[docs]</a>    <span class="k">def</span> <span class="nf">select_feature_low_vif</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Selects features with low variance inflation factor (VIF)</span>
+
+<span class="sd">        VIF is a key indicator of multicolinearity among the features. if VIF</span>
+<span class="sd">        is higher, say closer to 10 or higher, then such features are highly</span>
+<span class="sd">        correlated with other features and need to be dropped. Which features</span>
+<span class="sd">        need to be dropped is based on the problem at hand and the feasibility</span>
+<span class="sd">        of the data.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">selector5</span> <span class="o">=</span> <span class="n">Utilities</span><span class="o">.</span><span class="n">calculate_VIF</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xtrain</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">selector5_features</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xtrain</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
+        <span class="n">ii</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">selector5</span><span class="p">[</span><span class="s2">&quot;VIF&quot;</span><span class="p">]):</span>
+            <span class="k">if</span> <span class="n">val</span> <span class="o">&lt;</span> <span class="mf">10.0</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">selector5_features</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">idx</span><span class="p">)])</span>
+                <span class="n">ii</span> <span class="o">=</span> <span class="n">ii</span> <span class="o">+</span> <span class="mi">1</span></div>
+
+<div class="viewcode-block" id="FeatureSelect.select_features_BorutaShap"><a class="viewcode-back" href="../../feature_select.html#regression_pipeline.feature_select.FeatureSelect.select_features_BorutaShap">[docs]</a>    <span class="k">def</span> <span class="nf">select_features_BorutaShap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">random_state</span><span class="p">,</span> <span class="n">ntrials</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Selects feature set using a shap values from BorutaShap</span>
+
+<span class="sd">        .. _BorutaShap: https://github.com/Ekeany/Boruta-Shap</span>
+
+<span class="sd">        The BorutaShap method implemented here can be obtained from `BorutaShap`_.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ------------</span>
+<span class="sd">        random_state: int</span>
+<span class="sd">            Seed value to control the random number generator</span>
+
+<span class="sd">        ntrials: int</span>
+<span class="sd">            Number of trials.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">selector6</span> <span class="o">=</span> <span class="n">BorutaShap</span><span class="p">(</span><span class="n">importance_measure</span><span class="o">=</span><span class="s2">&quot;shap&quot;</span><span class="p">,</span> <span class="n">classification</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">xcols</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;x&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">ii</span><span class="p">)</span> <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xtrain</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])]</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xtrain</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">xcols</span><span class="p">)</span>
+        <span class="n">selector6</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
+            <span class="n">X</span><span class="o">=</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ytrain</span><span class="p">,</span> <span class="n">n_trials</span><span class="o">=</span><span class="n">ntrials</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="n">random_state</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">selector6_features</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">selector6</span><span class="o">.</span><span class="n">accepted</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FeatureSelect.select_features_using_GA"><a class="viewcode-back" href="../../feature_select.html#regression_pipeline.feature_select.FeatureSelect.select_features_using_GA">[docs]</a>    <span class="k">def</span> <span class="nf">select_features_using_GA</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">cv</span><span class="p">,</span> <span class="n">njobs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Selects features using genetic algorithm</span>
+
+<span class="sd">        .. _GeneticAlgo: https://pypi.org/project/sklearn-genetic/</span>
+
+<span class="sd">        The genetic algorithm used here is adopted from `GeneticAlgo`_.</span>
+<span class="sd">        More about the method can be read `GeneticAlgo`_.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        -------------</span>
+<span class="sd">        model : a model instance</span>
+<span class="sd">        cv: int, cross-validation generator or an iterator</span>
+<span class="sd">            if int, then defines the number of cross-validation folds</span>
+<span class="sd">        njobs: int</span>
+<span class="sd">            number of jobs to run in parallel</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">estimator</span> <span class="o">=</span> <span class="n">model</span>
+        <span class="n">selector7</span> <span class="o">=</span> <span class="n">GeneticSelectionCV</span><span class="p">(</span>
+            <span class="n">estimator</span><span class="p">,</span>
+            <span class="n">cv</span><span class="o">=</span><span class="n">cv</span><span class="p">,</span>
+            <span class="n">scoring</span><span class="o">=</span><span class="s2">&quot;neg_mean_squared_error&quot;</span><span class="p">,</span>
+            <span class="n">n_population</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+            <span class="n">crossover_proba</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+            <span class="n">mutation_proba</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span>
+            <span class="n">n_generations</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span>
+            <span class="n">crossover_independent_proba</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+            <span class="n">mutation_independent_proba</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
+            <span class="n">tournament_size</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+            <span class="n">n_gen_no_change</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+            <span class="n">caching</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">n_jobs</span><span class="o">=</span><span class="n">njobs</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">selector7</span> <span class="o">=</span> <span class="n">selector7</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xtrain</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ytrain</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">selector7_features</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xtrain</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
+
+        <span class="n">ii</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">selector7</span><span class="o">.</span><span class="n">support_</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">val</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">selector7_features</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">idx</span><span class="p">)])</span>
+                <span class="n">ii</span> <span class="o">=</span> <span class="n">ii</span> <span class="o">+</span> <span class="mi">1</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selector7_features</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FeatureSelect.select_features_vote"><a class="viewcode-back" href="../../feature_select.html#regression_pipeline.feature_select.FeatureSelect.select_features_vote">[docs]</a>    <span class="k">def</span> <span class="nf">select_features_vote</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">rf</span><span class="p">,</span>
+        <span class="n">model</span><span class="p">,</span>
+        <span class="n">cv</span><span class="p">,</span>
+        <span class="n">njobs</span><span class="p">,</span>
+        <span class="n">tolerance</span><span class="p">,</span>
+        <span class="n">var_threshold</span><span class="p">,</span>
+        <span class="n">pval</span><span class="p">,</span>
+        <span class="n">random_state</span><span class="p">,</span>
+        <span class="n">step_rfe</span><span class="p">,</span>
+        <span class="n">ntrials</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Selects features that are selected by majority of the methods as</span>
+<span class="sd">        above</span>
+
+<span class="sd">        Feature which are selected by majority of the methods implemented here</span>
+<span class="sd">        are supposed to be important features. This function selects the</span>
+<span class="sd">        features based on majority voting.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        --------------</span>
+<span class="sd">        rf: A random forest regression instance</span>
+
+<span class="sd">        model: A model instance (i.e. LinearRegression, SVR, etc..)</span>
+
+<span class="sd">        cv: int, cross-validation generator or an iterator</span>
+<span class="sd">            if int, then defines the number of cross-validation folds</span>
+
+<span class="sd">        njobs: int</span>
+<span class="sd">            number of jobs to run in parallel</span>
+
+<span class="sd">        tolerance: float</span>
+<span class="sd">            If the score is not incremented by at least tol between</span>
+<span class="sd">            two consecutive feature additions or removals, stop adding or</span>
+<span class="sd">            removing. More explanation can be read from sklearn doc.</span>
+
+<span class="sd">        var_threshold: float</span>
+<span class="sd">            Threshold for the variance for dropping a particular feature from</span>
+<span class="sd">            the data.</span>
+
+<span class="sd">        pval: float</span>
+<span class="sd">            p-value threshold in order to decide if the regression is</span>
+<span class="sd">            significant or not.</span>
+
+<span class="sd">        random_state: int</span>
+<span class="sd">            Seed value to control the random number generator</span>
+
+<span class="sd">        step_rfe: int or float</span>
+<span class="sd">            Please see the sklearn doc for RFECV</span>
+
+<span class="sd">        ntrials: int</span>
+<span class="sd">            Number of trials for Boruta algorithm.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">filter_low_variance_features</span><span class="p">(</span><span class="n">var_threshold</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">select_recursive_feature_elimination</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">cv</span><span class="p">,</span> <span class="n">step_rfe</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">select_feature_low_vif</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">select_borutapy</span><span class="p">(</span><span class="n">rf</span><span class="p">,</span> <span class="n">random_state</span><span class="p">,</span> <span class="n">ntrials</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">select_fregression</span><span class="p">(</span><span class="n">pval</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">select_sequential_feature_selector</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">cv</span><span class="p">,</span> <span class="n">tolerance</span><span class="p">,</span> <span class="n">njobs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">select_features_BorutaShap</span><span class="p">(</span><span class="n">random_state</span><span class="p">,</span> <span class="n">ntrials</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">select_features_using_GA</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">cv</span><span class="p">,</span> <span class="n">njobs</span><span class="p">)</span>
+
+        <span class="n">count</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">updat_feature_names_sub_</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">feature</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">updat_feature_names_sub_</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">feature</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">selector1_features</span><span class="p">:</span>
+                <span class="n">count</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">count</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">feature</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">selector2_features</span><span class="p">:</span>
+                <span class="n">count</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">count</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">feature</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">selector3_features</span><span class="p">:</span>
+                <span class="n">count</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">count</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">feature</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">selector4_features</span><span class="p">:</span>
+                <span class="n">count</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">count</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">feature</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">selector5_features</span><span class="p">:</span>
+                <span class="n">count</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">count</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">feature</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">selector6_features</span><span class="p">:</span>
+                <span class="n">count</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">count</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">feature</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">selector7_features</span><span class="p">:</span>
+                <span class="n">count</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">count</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+
+        <span class="n">prob</span> <span class="o">=</span> <span class="p">[</span><span class="n">val</span> <span class="o">/</span> <span class="mf">7.0</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">count</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">selected_features_</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">val</span> <span class="k">for</span> <span class="n">val</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">updat_feature_names_sub_</span><span class="p">,</span> <span class="n">prob</span><span class="p">)</span> <span class="k">if</span> <span class="n">p</span> <span class="o">&gt;</span> <span class="mf">0.5</span>
+        <span class="p">]</span>
+        <span class="n">prob_sel_features</span> <span class="o">=</span> <span class="p">[</span><span class="n">val</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">prob</span> <span class="k">if</span> <span class="n">val</span> <span class="o">&gt;</span> <span class="mf">0.5</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">selector2_features</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">trim_zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selector2_features</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">selector3_features</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">trim_zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selector3_features</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">selector5_features</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">trim_zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selector5_features</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">selector7_features</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">trim_zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selector7_features</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">all_selected_features_</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">selector0_features</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">selector1_features</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">selector2_features</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">selector3_features</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">selector4_features</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">selector5_features</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">selector6_features</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">selector7_features</span><span class="p">,</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selected_features_</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">),</span>
+        <span class="p">]</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Bhaskar Borah.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
