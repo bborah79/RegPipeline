@@ -70,6 +70,9 @@ def create_yaml_gen_input():
         requires_hyperparam_opt="False",
         requires_feature_encoding="True",
         requires_feature_scaling="True",
+        run_regularized_models = "True",
+        alphas = 'np.logspace(-10, 1, 400)',
+        l1_ratio_list = [0.1, 0.5, 0.7, 0.9, 0.95, 0.99, 1.0],
         scaler="MinMaxScaler()",
         encoding_requires=["catboost_encoding", "ordinal_encoding"],
 
@@ -124,7 +127,8 @@ def create_yaml_optuna():
         obj_direction="maximize",
         scoring_obejctive="neg_mean_squared_error",
         ntrials=100,
-        models_to_try=["random-forest", "gradient-boosting"],
+        models_to_try=["random-forest", "gradient-boosting", "huberreg",
+                       "quantilereg"],
         random_forest_params=[
             [
                 "n_estimators",
@@ -151,6 +155,31 @@ def create_yaml_optuna():
             [
                 "max_depth",
                 {"dtype": "int", "max_val": 200, "min_val": 50, "step_size": 10},
+            ],
+        ],
+
+        huberreg_params = [
+            [
+                "epsilon",
+                {"dtype": "float", "max_val": 20, "min_val": 1.1, "step_size":
+                 1},
+            ],
+            [
+                "alpha",
+                {"dtype": "float", "max_val": 10, "min_val": 0.01, "step_size":
+                 0.1},
+            ],
+        ],
+        quantilereg_params = [
+            [
+                "quantile",
+                {"dtype": "float", "max_val": 0.9, "min_val": 0.1, "step_size":
+                0.1},
+            ],
+            [
+                "alpha",
+                {"dtype": "float", "max_val": 10, "min_val": 0.01, "step_size":
+                0.1},
             ],
         ],
     )

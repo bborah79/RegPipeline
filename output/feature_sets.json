@@ -22,7 +22,6 @@
   "set2": [
     "Year",
     "Kilometer",
-    "Fuel_type",
     "Transmission",
     "Owner",
     "Drivetrain",
@@ -30,10 +29,10 @@
     "Width",
     "Height",
     "Fuel_tank_capacity",
-    "Engine_f",
     "Engine_hp"
   ],
   "set3": [
+    "Model",
     "Year",
     "Kilometer",
     "Transmission",
@@ -45,10 +44,12 @@
     "Engine_hp"
   ],
   "set4": [
+    "Model",
     "Year",
     "Kilometer",
     "Transmission",
     "Owner",
+    "Seller_type",
     "Drivetrain",
     "Length",
     "Width",
@@ -68,29 +69,27 @@
     "Engine_hp"
   ],
   "set6": [
-    "Model",
     "Kilometer",
     "Transmission",
-    "Location",
     "Owner",
     "Drivetrain"
   ],
   "set7": [
-    "Height",
-    "Engine_hp",
-    "Engine_f",
-    "Drivetrain",
-    "Year",
-    "Transmission",
-    "Fuel_tank_capacity",
     "Length",
+    "Engine_hp",
+    "Transmission",
+    "Height",
+    "Kilometer",
+    "Engine_f",
+    "Make",
+    "Year",
+    "Fuel_tank_capacity",
     "Width",
-    "Kilometer"
+    "Drivetrain"
   ],
   "set8": [
     "Year",
     "Kilometer",
-    "Fuel_type",
     "Transmission",
     "Owner",
     "Drivetrain",
@@ -110,7 +109,6 @@
     "Width",
     "Height",
     "Fuel_tank_capacity",
-    "Engine_f",
     "Engine_hp"
   ]
 }
