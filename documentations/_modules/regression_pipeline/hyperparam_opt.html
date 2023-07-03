@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>regression_pipeline.hyperparam_opt &mdash; Regression pipeline 0.00, 2023 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Regression pipeline
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../preprocess.html">Preprocess</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../feature_select.html">Feature Selection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../feature_eng.html">Feature Engineering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../regularization.html">Regularizations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../evalmodels.html">Evaluate Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../hyperparam_opt.html">Hyperparameter optimization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../utils.html">Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../math_transformers.html">Mathematical Feature Transformation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../vizualization.html">Visualization</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Regression pipeline</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">regression_pipeline.hyperparam_opt</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for regression_pipeline.hyperparam_opt</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">optuna</span>
+<span class="kn">import</span> <span class="nn">pickle</span>
+<span class="kn">import</span> <span class="nn">yaml</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">yaml.loader</span> <span class="kn">import</span> <span class="n">FullLoader</span>
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">cross_validate</span>
+<span class="kn">from</span> <span class="nn">sklearn.ensemble</span> <span class="kn">import</span> <span class="n">RandomForestRegressor</span><span class="p">,</span> <span class="n">GradientBoostingRegressor</span>
+
+<span class="kn">from</span> <span class="nn">evalmodels</span> <span class="kn">import</span> <span class="n">ModelSelection</span>
+<span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">Utilities</span>
+
+
+<div class="viewcode-block" id="OptunaOpt"><a class="viewcode-back" href="../../hyperparam_opt.html#regression_pipeline.hyperparam_opt.OptunaOpt">[docs]</a><span class="k">class</span> <span class="nc">OptunaOpt</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Optimization of hyperparameters with optuna</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    -------------</span>
+<span class="sd">    cv: int, cross-validated generator or an iterator</span>
+<span class="sd">        if an int, defines the number cross-validation folds</span>
+
+<span class="sd">    njobs: int</span>
+<span class="sd">        number of jobs to be run in parallel</span>
+
+<span class="sd">    scoring: a list of strings</span>
+<span class="sd">        A list of performance metrics to be evaluated</span>
+
+<span class="sd">    score_funcs: a list of strings</span>
+<span class="sd">        A list of score functions from sklearn</span>
+
+<span class="sd">    Methods</span>
+<span class="sd">    ------------</span>
+<span class="sd">    set_model_params():</span>
+<span class="sd">        creates the model parameters with their suggested values as per optuna</span>
+<span class="sd">        format</span>
+
+<span class="sd">    parse_hyperparams_inp():</span>
+<span class="sd">        Parses the input file and getting the control parameters for optuna</span>
+
+<span class="sd">    create_model():</span>
+<span class="sd">        Creates a trial model with the suggested parameters</span>
+
+<span class="sd">    objective():</span>
+<span class="sd">        Defines the objective function to be optimized</span>
+
+<span class="sd">    run_optuna():</span>
+<span class="sd">        Runs the optuna optimization process</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cv</span><span class="p">,</span> <span class="n">njobs</span><span class="p">,</span> <span class="n">scoring</span><span class="p">,</span> <span class="n">score_funcs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cv</span> <span class="o">=</span> <span class="n">cv</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">njobs</span> <span class="o">=</span> <span class="n">njobs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scoring</span> <span class="o">=</span> <span class="n">scoring</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">score_funcs</span> <span class="o">=</span> <span class="n">score_funcs</span>
+
+<div class="viewcode-block" id="OptunaOpt.set_model_params"><a class="viewcode-back" href="../../hyperparam_opt.html#regression_pipeline.hyperparam_opt.OptunaOpt.set_model_params">[docs]</a>    <span class="k">def</span> <span class="nf">set_model_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trial</span><span class="p">,</span> <span class="n">params_names</span><span class="p">,</span> <span class="n">params_dic</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Sets the necessary hyperparameter values as per optuna</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ------------</span>
+<span class="sd">        trial: Optuna trial object</span>
+
+<span class="sd">        params_names: a list</span>
+<span class="sd">            A list of parameter names of the model to be tuned</span>
+
+<span class="sd">        params_dic: a list of dictionaries</span>
+<span class="sd">            A list of dictionaries indicating range values for the parameters</span>
+<span class="sd">            to try</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">ii</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">params_names</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">params_dic</span><span class="p">[</span><span class="n">ii</span><span class="p">][</span><span class="mi">1</span><span class="p">][</span><span class="s2">&quot;dtype&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;int&quot;</span><span class="p">:</span>
+                <span class="n">max_val</span> <span class="o">=</span> <span class="n">params_dic</span><span class="p">[</span><span class="n">ii</span><span class="p">][</span><span class="mi">1</span><span class="p">][</span><span class="s2">&quot;max_val&quot;</span><span class="p">]</span>
+                <span class="n">min_val</span> <span class="o">=</span> <span class="n">params_dic</span><span class="p">[</span><span class="n">ii</span><span class="p">][</span><span class="mi">1</span><span class="p">][</span><span class="s2">&quot;min_val&quot;</span><span class="p">]</span>
+                <span class="n">step_size</span> <span class="o">=</span> <span class="n">params_dic</span><span class="p">[</span><span class="n">ii</span><span class="p">][</span><span class="mi">1</span><span class="p">][</span><span class="s2">&quot;step_size&quot;</span><span class="p">]</span>
+                <span class="n">params</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">trial</span><span class="o">.</span><span class="n">suggest_int</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">min_val</span><span class="p">,</span> <span class="n">max_val</span><span class="p">,</span> <span class="n">step_size</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">params_dic</span><span class="p">[</span><span class="n">ii</span><span class="p">][</span><span class="mi">1</span><span class="p">][</span><span class="s2">&quot;dtype&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;float&quot;</span><span class="p">:</span>
+                <span class="n">max_val</span> <span class="o">=</span> <span class="n">params_dic</span><span class="p">[</span><span class="n">ii</span><span class="p">][</span><span class="mi">1</span><span class="p">][</span><span class="s2">&quot;max_val&quot;</span><span class="p">]</span>
+                <span class="n">min_val</span> <span class="o">=</span> <span class="n">params_dic</span><span class="p">[</span><span class="n">ii</span><span class="p">][</span><span class="mi">1</span><span class="p">][</span><span class="s2">&quot;min_val&quot;</span><span class="p">]</span>
+                <span class="n">step_size</span> <span class="o">=</span> <span class="n">params_dic</span><span class="p">[</span><span class="n">ii</span><span class="p">][</span><span class="mi">1</span><span class="p">][</span><span class="s2">&quot;step_size&quot;</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">params_dic</span><span class="p">[</span><span class="n">ii</span><span class="p">][</span><span class="mi">1</span><span class="p">][</span><span class="s2">&quot;log_val&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;True&quot;</span><span class="p">:</span>
+                    <span class="n">log_val</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">log_val</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="n">params</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">trial</span><span class="o">.</span><span class="n">suggest_float</span><span class="p">(</span>
+                    <span class="n">name</span><span class="p">,</span> <span class="n">min_val</span><span class="p">,</span> <span class="n">max_val</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="n">step_size</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="n">log_val</span>
+                <span class="p">)</span>
+            <span class="k">elif</span> <span class="n">params_dic</span><span class="p">[</span><span class="n">ii</span><span class="p">][</span><span class="mi">1</span><span class="p">][</span><span class="s2">&quot;dtype&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;categorical&quot;</span><span class="p">:</span>
+                <span class="n">vals</span> <span class="o">=</span> <span class="n">params_dic</span><span class="p">[</span><span class="n">ii</span><span class="p">][</span><span class="mi">1</span><span class="p">][</span><span class="s2">&quot;vals&quot;</span><span class="p">]</span>
+                <span class="n">params</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">trial</span><span class="o">.</span><span class="n">suggest_categorical</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">vals</span><span class="p">)</span>
+            <span class="n">ii</span> <span class="o">=</span> <span class="n">ii</span> <span class="o">+</span> <span class="mi">1</span>
+
+        <span class="k">return</span> <span class="n">params</span></div>
+
+<div class="viewcode-block" id="OptunaOpt.parse_hyperparams_inp"><a class="viewcode-back" href="../../hyperparam_opt.html#regression_pipeline.hyperparam_opt.OptunaOpt.parse_hyperparams_inp">[docs]</a>    <span class="k">def</span> <span class="nf">parse_hyperparams_inp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config_file</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Parses the hyperparameter optimization config file</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ------------</span>
+<span class="sd">        config_file: string</span>
+<span class="sd">            Name of the config file</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">config_file</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">params_data</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">Loader</span><span class="o">=</span><span class="n">FullLoader</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">FileNotFoundError</span> <span class="k">as</span> <span class="n">ferror</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">ferror</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">IOError</span> <span class="k">as</span> <span class="n">ioerror</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">ioerror</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">yaml</span><span class="o">.</span><span class="n">YAMLError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">exc</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">name_of_study</span> <span class="o">=</span> <span class="n">params_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name_of_study&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">obj_direction</span> <span class="o">=</span> <span class="n">params_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;obj_direction&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scoring_obejctive</span> <span class="o">=</span> <span class="n">params_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;scoring_obejctive&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ntrials</span> <span class="o">=</span> <span class="n">params_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ntrials&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">models_to_try</span> <span class="o">=</span> <span class="n">params_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;models_to_try&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">modeltype</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">models_to_try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">modeltype</span> <span class="o">==</span> <span class="s2">&quot;random-forest&quot;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">random_forest_params</span> <span class="o">=</span> <span class="n">params_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;random_forest_params&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">modeltype</span> <span class="o">==</span> <span class="s2">&quot;gradient-boosting&quot;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">gradient_boost_params</span> <span class="o">=</span> <span class="n">params_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;gradient_boost_params&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="OptunaOpt.create_model"><a class="viewcode-back" href="../../hyperparam_opt.html#regression_pipeline.hyperparam_opt.OptunaOpt.create_model">[docs]</a>    <span class="k">def</span> <span class="nf">create_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trial</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Creates a trail model with a subset of the parameters</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ------------</span>
+<span class="sd">        trial: Optuna trial object</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        ---------</span>
+<span class="sd">        model: model instance</span>
+<span class="sd">            A model instance after setting the parameter values</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">model_type</span> <span class="o">=</span> <span class="n">trial</span><span class="o">.</span><span class="n">suggest_categorical</span><span class="p">(</span><span class="s2">&quot;model_t&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">models_to_try</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">model_type</span> <span class="o">==</span> <span class="s2">&quot;gradient-boosting&quot;</span><span class="p">:</span>
+            <span class="n">gradient_boost_params_names</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">gradient_boost_params</span><span class="p">[</span><span class="n">ii</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gradient_boost_params</span><span class="p">))</span>
+            <span class="p">]</span>
+
+            <span class="n">params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_model_params</span><span class="p">(</span>
+                <span class="n">trial</span><span class="p">,</span> <span class="n">gradient_boost_params_names</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">gradient_boost_params</span>
+            <span class="p">)</span>
+
+            <span class="n">model</span> <span class="o">=</span> <span class="n">GradientBoostingRegressor</span><span class="p">()</span>
+            <span class="n">model</span><span class="o">.</span><span class="n">set_params</span><span class="p">(</span><span class="o">**</span><span class="n">params</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">model_type</span> <span class="o">==</span> <span class="s2">&quot;random-forest&quot;</span><span class="p">:</span>
+            <span class="n">random_forest_params_names</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">random_forest_params</span><span class="p">[</span><span class="n">ii</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">random_forest_params</span><span class="p">))</span>
+            <span class="p">]</span>
+            <span class="n">params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_model_params</span><span class="p">(</span>
+                <span class="n">trial</span><span class="p">,</span> <span class="n">random_forest_params_names</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">random_forest_params</span>
+            <span class="p">)</span>
+
+            <span class="n">model</span> <span class="o">=</span> <span class="n">RandomForestRegressor</span><span class="p">()</span>
+            <span class="n">model</span><span class="o">.</span><span class="n">set_params</span><span class="p">(</span><span class="o">**</span><span class="n">params</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">model</span></div>
+
+<div class="viewcode-block" id="OptunaOpt.objective"><a class="viewcode-back" href="../../hyperparam_opt.html#regression_pipeline.hyperparam_opt.OptunaOpt.objective">[docs]</a>    <span class="k">def</span> <span class="nf">objective</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trial</span><span class="p">,</span> <span class="n">xtrain</span><span class="p">,</span> <span class="n">ytrain</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Defines the objective function to be optimized</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------------</span>
+<span class="sd">        trial: Optuna trial object</span>
+
+<span class="sd">        xtrain: an array of shape (n_samples, n_features)</span>
+<span class="sd">            Training data</span>
+
+<span class="sd">        ytrain: an array of shape (n_samples, )</span>
+<span class="sd">            Training target values</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -----------</span>
+<span class="sd">        add_score: float</span>
+<span class="sd">            The addition of the cross-validated train and test scores</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">model_to_try</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_model</span><span class="p">(</span><span class="n">trial</span><span class="p">)</span>
+
+        <span class="n">cv_results</span> <span class="o">=</span> <span class="n">cross_validate</span><span class="p">(</span>
+            <span class="n">model_to_try</span><span class="p">,</span>
+            <span class="n">xtrain</span><span class="p">,</span>
+            <span class="n">ytrain</span><span class="p">,</span>
+            <span class="n">scoring</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">scoring_obejctive</span><span class="p">,</span>
+            <span class="n">cv</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cv</span><span class="p">,</span>
+            <span class="n">n_jobs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">njobs</span><span class="p">,</span>
+            <span class="n">return_train_score</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">return_estimator</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">mean_test_score</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">cv_results</span><span class="p">[</span><span class="s2">&quot;test_score&quot;</span><span class="p">])</span>
+        <span class="n">mean_train_score</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">cv_results</span><span class="p">[</span><span class="s2">&quot;train_score&quot;</span><span class="p">])</span>
+
+        <span class="n">add_score</span> <span class="o">=</span> <span class="n">mean_train_score</span> <span class="o">+</span> <span class="n">mean_test_score</span>
+
+        <span class="k">return</span> <span class="n">add_score</span></div>
+
+<div class="viewcode-block" id="OptunaOpt.run_optuna"><a class="viewcode-back" href="../../hyperparam_opt.html#regression_pipeline.hyperparam_opt.OptunaOpt.run_optuna">[docs]</a>    <span class="k">def</span> <span class="nf">run_optuna</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">optuna_config_file</span><span class="p">,</span> <span class="n">xtrain</span><span class="p">,</span> <span class="n">xtest</span><span class="p">,</span> <span class="n">ytrain</span><span class="p">,</span> <span class="n">ytest</span><span class="p">,</span> <span class="n">all_selected_features</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Runs the optimization process</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ------------</span>
+<span class="sd">        optuna_config_file: str</span>
+<span class="sd">            The name of the hyperparameter optimization configuration</span>
+
+<span class="sd">        xtrain: an array of shape (n_sapmles, n_features)</span>
+<span class="sd">            Train data</span>
+
+<span class="sd">        xtest: an array of shape (k_samples, n_features)</span>
+<span class="sd">            Test data</span>
+
+<span class="sd">        ytrain: an array of shape (n_samples, )</span>
+<span class="sd">            Train target values</span>
+
+<span class="sd">        ytest: an array of shape (k_samples, )</span>
+<span class="sd">            Test target data</span>
+
+<span class="sd">        all_selected_features: a list</span>
+<span class="sd">            A list of all the selected subsets of features</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        ----------</span>
+<span class="sd">        all_results_df: a pandas dataframe</span>
+<span class="sd">            A dataframe of all the results and scores of the optimized models</span>
+<span class="sd">            for each subset of features</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">ii</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">best_models_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">results_ind_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+        <span class="n">all_results_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+        <span class="n">results_df_indx</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">mselect</span> <span class="o">=</span> <span class="n">ModelSelection</span><span class="p">(</span>
+            <span class="n">all_selected_features</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">scoring</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">score_funcs</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cv</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">njobs</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parse_hyperparams_inp</span><span class="p">(</span><span class="n">optuna_config_file</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">features</span> <span class="ow">in</span> <span class="n">all_selected_features</span><span class="p">:</span>
+            <span class="n">filtered_X_train</span> <span class="o">=</span> <span class="n">Utilities</span><span class="o">.</span><span class="n">filter_features</span><span class="p">(</span><span class="n">xtrain</span><span class="p">,</span> <span class="n">features</span><span class="p">)</span>
+            <span class="n">filtered_X_test</span> <span class="o">=</span> <span class="n">Utilities</span><span class="o">.</span><span class="n">filter_features</span><span class="p">(</span><span class="n">xtest</span><span class="p">,</span> <span class="n">features</span><span class="p">)</span>
+            <span class="n">ii</span> <span class="o">=</span> <span class="n">ii</span> <span class="o">+</span> <span class="mi">1</span>
+
+            <span class="n">study_name</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">name_of_study</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">ii</span><span class="p">)])</span>
+            <span class="c1"># storage = &quot;sqlite:///{}.db&quot;.format(study_name)</span>
+            <span class="c1"># with open(&quot;sampler.pkl&quot;, &quot;wb&quot;) as fout:</span>
+            <span class="c1">#    pickle.dump(study.sampler, fout)</span>
+            <span class="c1"># restored_sampler = pickle.load(open(&quot;sampler.pkl&quot;, &quot;rb&quot;))</span>
+
+            <span class="n">study</span> <span class="o">=</span> <span class="n">optuna</span><span class="o">.</span><span class="n">create_study</span><span class="p">(</span>
+                <span class="n">study_name</span><span class="o">=</span><span class="n">study_name</span><span class="p">,</span>
+                <span class="n">direction</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">obj_direction</span><span class="p">,</span>
+                <span class="n">storage</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="n">load_if_exists</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="n">sampler</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="p">)</span>
+
+            <span class="n">study</span><span class="o">.</span><span class="n">optimize</span><span class="p">(</span>
+                <span class="k">lambda</span> <span class="n">trial</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">objective</span><span class="p">(</span><span class="n">trial</span><span class="p">,</span> <span class="n">filtered_X_train</span><span class="p">,</span> <span class="n">ytrain</span><span class="p">),</span>
+                <span class="n">n_trials</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ntrials</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">best_model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_model</span><span class="p">(</span><span class="n">study</span><span class="o">.</span><span class="n">best_trial</span><span class="p">)</span>
+            <span class="n">model_name</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">type</span><span class="p">(</span><span class="n">best_model</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">ii</span><span class="p">)])</span>
+            <span class="n">results_df_indx</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">model_name</span><span class="p">)</span>
+
+            <span class="n">results</span> <span class="o">=</span> <span class="n">mselect</span><span class="o">.</span><span class="n">evaluate_model_performance</span><span class="p">(</span>
+                <span class="n">best_model</span><span class="p">,</span> <span class="n">filtered_X_train</span><span class="p">,</span> <span class="n">filtered_X_test</span><span class="p">,</span> <span class="n">ytrain</span><span class="p">,</span> <span class="n">ytest</span>
+            <span class="p">)</span>
+            <span class="n">all_results_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">all_results_df</span><span class="p">,</span> <span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">best_models_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">best_model</span><span class="p">)</span>
+        <span class="n">all_results_df</span> <span class="o">=</span> <span class="n">all_results_df</span><span class="o">.</span><span class="n">set_axis</span><span class="p">(</span><span class="n">results_df_indx</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="s2">&quot;index&quot;</span><span class="p">)</span>
+        <span class="n">all_results_df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;Models&quot;</span>
+
+        <span class="k">return</span> <span class="n">all_results_df</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Bhaskar Borah.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
