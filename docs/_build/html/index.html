@@ -45,6 +45,7 @@
 <li class="toctree-l1"><a class="reference internal" href="preprocess.html">Preprocess</a></li>
 <li class="toctree-l1"><a class="reference internal" href="feature_select.html">Feature Selection</a></li>
 <li class="toctree-l1"><a class="reference internal" href="feature_eng.html">Feature Engineering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="regularization.html">Regularizations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="evalmodels.html">Evaluate Models</a></li>
 <li class="toctree-l1"><a class="reference internal" href="hyperparam_opt.html">Hyperparameter optimization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="utils.html">Utilities</a></li>
@@ -90,6 +91,7 @@ the hyperparameters of the models can be tuned with optuna.</p>
 <li><p>Feature engineering module</p></li>
 <li><p>Feature selection module</p></li>
 <li><p>Feature transformation module</p></li>
+<li><p>Regularized regression module</p></li>
 <li><p>Optuna optimization module</p></li>
 <li><p>Model evaluation module</p></li>
 <li><p>Vizualization module</p></li>
@@ -142,6 +144,12 @@ square, sqaure root, reciprocal, and power transformations are implemented in th
 module. If no feature transformation and target transformations are required, then
 <em>requires_feature_transformation</em> and <em>requires_target_transformation</em> flags can
 both be set to <em>False</em>.</p>
+</section>
+<section id="regularized-regression-module">
+<h2>Regularized regression module<a class="headerlink" href="#regularized-regression-module" title="Permalink to this heading"></a></h2>
+<p>Various regularization approaches such as Ridge regression and Lasso regression are
+implemented in this module. This module performs RidgeCV, LassoCV, and
+ElasticNetCV and are adopted from sklearn.</p>
 </section>
 <section id="optuna-optimization-module">
 <h2>Optuna optimization module<a class="headerlink" href="#optuna-optimization-module" title="Permalink to this heading"></a></h2>
@@ -237,6 +245,15 @@ and the results in terms of the perfromance of all the models tried will be gene
 <li class="toctree-l1"><a class="reference internal" href="feature_eng.html">Feature Engineering</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="feature_eng.html#regression_pipeline.feature_eng.FeatureEngineering"><code class="docutils literal notranslate"><span class="pre">FeatureEngineering</span></code></a><ul>
 <li class="toctree-l3"><a class="reference internal" href="feature_eng.html#regression_pipeline.feature_eng.FeatureEngineering.engineer_feature"><code class="docutils literal notranslate"><span class="pre">FeatureEngineering.engineer_feature()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="regularization.html">Regularizations</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="regularization.html#regression_pipeline.regularization.Regularizations"><code class="docutils literal notranslate"><span class="pre">Regularizations</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="regularization.html#regression_pipeline.regularization.Regularizations.perform_elasticnetcv"><code class="docutils literal notranslate"><span class="pre">Regularizations.perform_elasticnetcv()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="regularization.html#regression_pipeline.regularization.Regularizations.perform_lassocv"><code class="docutils literal notranslate"><span class="pre">Regularizations.perform_lassocv()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="regularization.html#regression_pipeline.regularization.Regularizations.perform_ridgereg"><code class="docutils literal notranslate"><span class="pre">Regularizations.perform_ridgereg()</span></code></a></li>
 </ul>
 </li>
 </ul>

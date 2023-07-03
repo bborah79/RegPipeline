@@ -18,6 +18,11 @@ import statsmodels.api as sm
 import scipy.stats as scpst
 from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor
 from sklearn.svm import SVR
+from numba.core.errors import NumbaDeprecationWarning, NumbaPendingDeprecationWarning
+import warnings
+
+warnings.simplefilter('ignore', category=NumbaDeprecationWarning)
+warnings.simplefilter('ignore', category=NumbaPendingDeprecationWarning)
 
 sys.path.append("./regression_pipeline")
 from preprocess import PreProcessData
@@ -26,6 +31,7 @@ from evalmodels import ModelSelection
 from feature_eng import FeatureEngineering
 from vizualization import VisualizationData
 from hyperparam_opt import OptunaOpt
+from regularization import Regularizations
 
 
 def main():
@@ -84,6 +90,9 @@ def main():
     requires_hyperparam_opt = input_data.get("requires_hyperparam_opt")
     requires_feature_encoding = input_data.get("requires_feature_encoding")
     requires_feature_scaling = input_data.get("requires_feature_scaling")
+    run_regularized_models = input_data.get("run_regularized_models")
+    alphas = eval(input_data.get("alphas"))
+    l1_ratio_list = input_data.get("l1_ratio_list")
     scaler = eval(input_data.get("scaler"))
     encoders = input_data.get("encoding_requires")
     features_to_encode = input_data.get("features_to_encode")
@@ -167,6 +176,39 @@ def main():
         updat_feature_names_sub = feature_selection.org_feature_names_sub_
         all_selected_features = [list(updat_feature_names_sub)]
 
+    if run_regularized_models == "True":
+        regularized_models = Regularizations(cv_method, alphas, njobs, random_state)
+
+        ridge_results = regularized_models.perform_ridgereg(
+            Xtrain, y_train, Xtest, y_test, scoring="neg_mean_squared_error"
+        )
+        lasso_results = regularized_models.perform_lassocv(Xtrain, y_train,
+                                                           Xtest, y_test)
+        elasticnet_results = regularized_models.perform_elasticnetcv(
+            Xtrain, y_train, Xtest, y_test, l1_ratio_list
+        )
+        regularized_res = pd.DataFrame()
+        regularized_res["RidgeReg"] = ridge_results[:-1]
+        regularized_res["LassoReg"] = lasso_results[:-1]
+        regularized_res["ElasticNet"] = elasticnet_results[:-1]
+
+        coeffs = {"Ridge": list(ridge_results[-1]), "Lasso":
+                  list(lasso_results[-1]),
+                  "ElasticNet": list(elasticnet_results[-1])}
+
+        regularized_res.index = ["r2_train", "r2_test", "est_alpha"]
+
+        dfasstring = regularized_res.to_string(header=True, index=True)
+
+        with open("./regularized_models_results.dat", "w") as file:
+            file.write(dfasstring)
+
+        with open("./regularized_coefs.json", "w") as file:
+            json_string = json.dumps(
+                coeffs, default=lambda o: o.__dict__, sort_keys=True, indent=2
+                )
+            file.write(json_string)
+
     if requires_hyperparam_opt == "True":
         print("running optuna opt.....")
         hyperopt = OptunaOpt(cv_method, njobs, scoring, score_funcs)
@@ -202,7 +244,9 @@ if __name__ == "__main__":
 
     df_cv = abs(all_results[0].filter(regex="cv|pval|t-stat", axis=1))
     df_oth = abs(
-        all_results[0].drop(all_results[0].filter(regex="cv|pval|t-stat").columns, axis=1)
+        all_results[0].drop(
+            all_results[0].filter(regex="cv|pval|t-stat").columns, axis=1
+        )
     )
 
     dfAsString_cv = df_cv.to_string(header=True, index=True)
@@ -224,6 +268,14 @@ if __name__ == "__main__":
     vz.plot_cv_train_test_scores()
     vz.plot_pvalues()
 
-    with open("./output/feature_sets.json", 'w') as file:
-        json_string = json.dumps(all_results[1], default=lambda o: o.__dict__, sort_keys=True, indent=2)
+    with open("./output/feature_sets.json", "w") as file:
+        json_string = json.dumps(
+            all_results[1], default=lambda o: o.__dict__, sort_keys=True, indent=2
+        )
         file.write(json_string)
+
+
+    cwd = os.getcwd()
+    for file in os.listdir(cwd):
+        if file.endswith((".png", ".jpg", ".dat", ".json")):
+            shutil.move(os.path.join(cwd, file), out_path)

@@ -1,0 +1,4 @@
+           RidgeReg  LassoReg  ElasticNet
+r2_train   0.884097  0.884032    0.884032
+r2_test    0.885922  0.889722    0.889722
+est_alpha  0.324547  0.000470    0.000470

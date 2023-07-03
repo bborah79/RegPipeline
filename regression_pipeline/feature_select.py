@@ -427,8 +427,6 @@ class FeatureSelect:
                 self.selector7_features[ii] = "".join(["x", str(idx)])
                 ii = ii + 1
 
-        print(self.selector7_features)
-
     def select_features_vote(
         self,
         rf,

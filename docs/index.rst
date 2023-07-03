@@ -19,6 +19,7 @@ The pipeline is divided into various modules
 * Feature engineering module
 * Feature selection module
 * Feature transformation module
+* Regularized regression module
 * Optuna optimization module
 * Model evaluation module
 * Vizualization module 
@@ -75,6 +76,13 @@ square, sqaure root, reciprocal, and power transformations are implemented in th
 module. If no feature transformation and target transformations are required, then
 *requires_feature_transformation* and *requires_target_transformation* flags can 
 both be set to *False*.
+
+Regularized regression module
+-------------------------------
+
+Various regularization approaches such as Ridge regression and Lasso regression are
+implemented in this module. This module performs RidgeCV, LassoCV, and
+ElasticNetCV and are adopted from sklearn. 
 
 Optuna optimization module
 --------------------------
@@ -153,6 +161,7 @@ Contents:
    preprocess
    feature_select
    feature_eng
+   regularization
    evalmodels
    hyperparam_opt
    utils
